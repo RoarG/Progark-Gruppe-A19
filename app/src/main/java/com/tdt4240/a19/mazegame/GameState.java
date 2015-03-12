@@ -1,5 +1,6 @@
 package com.tdt4240.a19.mazegame;
 
+import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 
 import org.andengine.entity.scene.Scene;
@@ -9,7 +10,12 @@ import org.andengine.entity.scene.Scene;
  */
 public class GameState {
 
+    private static final GameState gameState = new GameState();
+
     private Scene welcome = new WelcomeScene();
+    private Scene game = new GameScene();
+
+    private GameActivity gameActivity;
 
     public GameState() {
 
@@ -17,5 +23,21 @@ public class GameState {
 
     public Scene getWelcomeScene() {
         return welcome;
+    }
+
+    public static GameState getInstance() {
+        return gameState;
+    }
+
+    public void setGameActivity(GameActivity gameActivity) {
+        this.gameActivity = gameActivity;
+    }
+
+    public GameActivity getGameActivity() {
+        return gameActivity;
+    }
+
+    public Scene getGameScene() {
+        return game;
     }
 }

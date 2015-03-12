@@ -1,6 +1,7 @@
 package com.tdt4240.a19.mazegame.scenes;
 
 import com.tdt4240.a19.mazegame.GameActivity;
+import com.tdt4240.a19.mazegame.GameState;
 
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -16,7 +17,9 @@ public class WelcomeScene extends Scene {
 
     private ButtonSprite startButton;
 
-    public void init(GameActivity game) {
+    public void init() {
+        GameActivity game = GameState.getInstance().getGameActivity();
+
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
 
         float x = 165.0f;
