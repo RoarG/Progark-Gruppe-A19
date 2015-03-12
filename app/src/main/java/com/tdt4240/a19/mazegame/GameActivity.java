@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
+import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 
 import org.andengine.engine.camera.BoundCamera;
@@ -26,7 +27,6 @@ public class GameActivity extends BaseGameActivity {
     public static final int CAMERA_HEIGHT = 800;
 
     private Camera camera;
-    private GameState gameState;
 
     private SpriteHandler spriteHandler;
     private FontHandler fontHandler;
@@ -36,6 +36,7 @@ public class GameActivity extends BaseGameActivity {
         BoundCamera camera = new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         //camera.setBounds(-400, -500, 2000, 800);
         //camera.setBoundsEnabled(true);
+        GameState.getInstance().setGameActivity(this);
         this.camera = camera;
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
     }
@@ -44,7 +45,7 @@ public class GameActivity extends BaseGameActivity {
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
-        spriteHandler = new SpriteHandler(this);
+        spriteHandler = new SpriteHandler();
         spriteHandler.setupAtlases();
         spriteHandler.setupSprites();
         spriteHandler.buildAtlases();
@@ -52,7 +53,7 @@ public class GameActivity extends BaseGameActivity {
 
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("fonts/");
 
-        fontHandler = new FontHandler(this);
+        fontHandler = new FontHandler();
         fontHandler.createFonts();
         fontHandler.loadFonts();
 
@@ -61,14 +62,15 @@ public class GameActivity extends BaseGameActivity {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        gameState = new GameState();
-        pOnCreateSceneCallback.onCreateSceneFinished(gameState.getWelcomeScene());
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
     }
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
         if (pScene instanceof WelcomeScene)
-            ((WelcomeScene) pScene).init(this);
+            ((WelcomeScene) pScene).init();
+        else if (pScene instanceof GameScene)
+            ((GameScene) pScene).init();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
 

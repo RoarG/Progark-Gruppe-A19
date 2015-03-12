@@ -1,7 +1,9 @@
 package com.tdt4240.a19.mazegame.assetsHandler;
 
 import com.tdt4240.a19.mazegame.GameActivity;
+import com.tdt4240.a19.mazegame.GameState;
 
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
@@ -15,30 +17,37 @@ import org.andengine.opengl.texture.region.ITextureRegion;
  */
 public class SpriteHandler {
 
-    private GameActivity game;
-
     private BuildableBitmapTextureAtlas buttons;
     private BuildableBitmapTextureAtlas backgrounds;
+    private BuildableBitmapTextureAtlas sprites;
 
     private ITextureRegion button;
+    private ITextureRegion user;
 
-    public SpriteHandler(GameActivity game) {
-        this.game = game;
+    public SpriteHandler() {
+
     }
 
     public void setupAtlases() {
+        GameActivity game = GameState.getInstance().getGameActivity();
+
         buttons = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
         backgrounds = new BuildableBitmapTextureAtlas(game.getTextureManager(), 2048, 2048);
+        sprites = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
     }
 
     public void setupSprites() {
+        GameActivity game = GameState.getInstance().getGameActivity();
+
         button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
+        user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
     }
 
     public void buildAtlases() {
         try {
             buttons.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
             backgrounds.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+            sprites.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
         } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
             e.printStackTrace();
         }
@@ -47,9 +56,14 @@ public class SpriteHandler {
     public void loadAtlases() {
         buttons.load();
         backgrounds.load();
+        sprites.load();
     }
 
     public ITextureRegion getButtonSprite() {
         return button;
+    }
+
+    public ITextureRegion getUserSprite() {
+        return user;
     }
 }
