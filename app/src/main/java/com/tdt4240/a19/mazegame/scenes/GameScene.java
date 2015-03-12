@@ -2,14 +2,18 @@ package com.tdt4240.a19.mazegame.scenes;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.math.Vector2;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.maze.MazeLayer;
+import com.tdt4240.a19.mazegame.user.User;
 import com.tdt4240.a19.mazegame.user.UserLayer;
 
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 
@@ -20,10 +24,12 @@ import java.util.Vector;
  */
 public class GameScene extends Scene {
 
+    private PhysicsWorld physicsWorld;
+
     private UserLayer userLayer;
     private MazeLayer mazeLayer;
 
-    private Vector<Float> pressed = new Vector<Float>(2);
+    private Vector2 pressed = new Vector2();
 
     public GameScene() {
         mazeLayer = new MazeLayer();
@@ -31,6 +37,9 @@ public class GameScene extends Scene {
     }
 
     public void init() {
+        physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
+        registerUpdateHandler(physicsWorld);
+
         GameActivity game = GameState.getInstance().getGameActivity();
 
         mazeLayer.init();
@@ -46,22 +55,26 @@ public class GameScene extends Scene {
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
         switch (pSceneTouchEvent.getAction()) {
             case TouchEvent.ACTION_DOWN:
-                pressed.clear();
-                pressed.add(pSceneTouchEvent.getX());
-                pressed.add(pSceneTouchEvent.getY());
+                pressed = new Vector2(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
                 break;
             case TouchEvent.ACTION_UP:
-                float deltaX = pSceneTouchEvent.getX() - pressed.get(0);
-                float deltaY = pSceneTouchEvent.getY() - pressed.get(1);
+                float deltaX = pSceneTouchEvent.getX() - pressed.x;
+                float deltaY = pSceneTouchEvent.getY() - pressed.y;
                 if (Math.abs(deltaX) > Math.abs(deltaY))
-                    userLayer.getUser().setPosition(userLayer.getUser().getX() + deltaX, userLayer.getUser().getY());
+                    ((User)userLayer.getUser()).getBody().setLinearVelocity(new Vector2(deltaX / 100, 0));
+                    //userLayer.getUser().setPosition(userLayer.getUser().getX() + deltaX, userLayer.getUser().getY());
                 else
-                    userLayer.getUser().setPosition(userLayer.getUser().getX(), userLayer.getUser().getY() + deltaY);
+                    ((User)userLayer.getUser()).getBody().setLinearVelocity(new Vector2(0, deltaY / 100));
+                    //userLayer.getUser().setPosition(userLayer.getUser().getX(), userLayer.getUser().getY() + deltaY);
                 break;
             case TouchEvent.ACTION_MOVE:
                 //userLayer.getUser().setPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
                 break;
         }
         return false;
+    }
+
+    public PhysicsWorld getPhysicsWorld() {
+        return physicsWorld;
     }
 }
