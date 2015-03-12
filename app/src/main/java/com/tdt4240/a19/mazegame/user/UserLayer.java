@@ -35,4 +35,8 @@ public class UserLayer extends Entity {
 
         attachChild(user);
     }
+
+    public Sprite getUser() {
+        return user;
+    }
 }
