@@ -1,10 +1,5 @@
 package com.tdt4240.a19.mazegame;
 
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
@@ -16,10 +11,8 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.Background;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.BaseGameActivity;
-import org.andengine.util.color.Color;
 
 public class GameActivity extends BaseGameActivity {
 
@@ -62,7 +55,7 @@ public class GameActivity extends BaseGameActivity {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene());
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
     }
 
     @Override
