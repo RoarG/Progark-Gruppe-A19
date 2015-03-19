@@ -9,7 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BaseGameUtils" />
             <option value="$PROJECT_DIR$/andengine" />
+            <option value="$PROJECT_DIR$/andenginephysicsbox2dextension" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

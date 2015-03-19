@@ -21,7 +21,7 @@ public class SpriteHandler {
     private BuildableBitmapTextureAtlas backgrounds;
     private BuildableBitmapTextureAtlas sprites;
 
-    private ITextureRegion button;
+    private ITextureRegion play_button;
     private ITextureRegion user;
 
     public SpriteHandler() {
@@ -39,13 +39,13 @@ public class SpriteHandler {
     public void setupSprites() {
         GameActivity game = GameState.getInstance().getGameActivity();
 
-        button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
+        play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
     }
 
     public void buildAtlases() {
         try {
-            buttons.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+            buttons.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,1,0));
             backgrounds.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
             sprites.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
         } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
@@ -54,13 +54,13 @@ public class SpriteHandler {
     }
 
     public void loadAtlases() {
-        buttons.load();
-        backgrounds.load();
-        sprites.load();
+        this.buttons.load();
+        this.backgrounds.load();
+        this.sprites.load();
     }
 
     public ITextureRegion getButtonSprite() {
-        return button;
+        return play_button;
     }
 
     public ITextureRegion getUserSprite() {
