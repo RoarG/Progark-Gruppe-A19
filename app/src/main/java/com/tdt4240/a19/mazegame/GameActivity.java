@@ -9,6 +9,7 @@ import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
+import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
@@ -62,7 +63,7 @@ public class GameActivity extends BaseGameActivity {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene() );
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameRoomScene() );
     }
 
     @Override
@@ -71,6 +72,8 @@ public class GameActivity extends BaseGameActivity {
             ((WelcomeScene) pScene).init();
         else if (pScene instanceof GameScene)
             ((GameScene) pScene).init();
+        else if (pScene instanceof GameRoomScene)
+            ((GameRoomScene) pScene).initScene();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
     }
 

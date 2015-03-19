@@ -1,7 +1,9 @@
 package com.tdt4240.a19.mazegame;
 
+import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
+
 
 import org.andengine.entity.scene.Scene;
 
@@ -14,6 +16,7 @@ public class GameState {
 
     private Scene welcome = new WelcomeScene();
     private Scene game = new GameScene();
+    private Scene gameRoom = new GameRoomScene();
 
     private GameActivity gameActivity;
 
@@ -39,5 +42,9 @@ public class GameState {
 
     public Scene getGameScene() {
         return game;
+    }
+
+    public Scene getGameRoomScene() {
+        return gameRoom;
     }
 }
