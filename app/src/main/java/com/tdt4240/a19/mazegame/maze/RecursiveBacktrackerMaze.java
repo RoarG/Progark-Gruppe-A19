@@ -26,7 +26,7 @@ public class RecursiveBacktrackerMaze extends Maze {
     private int startX;
     private int startY;
 
-    private Random rand = new Random();
+    private Random rand;
 
     /**
      * Creates a new Recursive Backtracking maze generator.  A random starting
@@ -35,9 +35,10 @@ public class RecursiveBacktrackerMaze extends Maze {
      * @param width the maze width
      * @param height the maze height
      */
-    public RecursiveBacktrackerMaze(int width, int height) {
-        super(width, height);
+    public RecursiveBacktrackerMaze(long seed, int width, int height) {
+        super(seed, width, height);
 
+        rand = new Random(seed);
         this.startX = rand.nextInt(width);
         this.startY = rand.nextInt(height);
     }
@@ -51,9 +52,9 @@ public class RecursiveBacktrackerMaze extends Maze {
      * @param startX the starting X-coordinate
      * @param startY the starting Y-coordinate
      */
-    public RecursiveBacktrackerMaze(int width, int height,
+    public RecursiveBacktrackerMaze(long seed, int width, int height,
                                     int startX, int startY) {
-        super(width, height);
+        super(seed, width, height);
 
         checkLocation(startX, startY);
 
