@@ -3,6 +3,12 @@ package com.tdt4240.a19.mazegame.scenes;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.maze.MazeLayer;
@@ -22,7 +28,7 @@ import java.util.Vector;
 /**
  * Created by Runar on 06.03.2015.
  */
-public class GameScene extends Scene {
+public class GameScene extends Scene implements ContactListener {
 
     private PhysicsWorld physicsWorld;
 
@@ -40,6 +46,7 @@ public class GameScene extends Scene {
     public void init() {
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
+        physicsWorld.setContactListener(this);
 
         GameActivity game = GameState.getInstance().getGameActivity();
 
@@ -73,6 +80,32 @@ public class GameScene extends Scene {
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Body a = contact.getFixtureA().getBody();
+        Body b = contact.getFixtureB().getBody();
+
+        switch (a.getUserData()) {
+
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Body a = contact.getFixtureA().getBody();
+        Body b = contact.getFixtureB().getBody();
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 
     public PhysicsWorld getPhysicsWorld() {
