@@ -13,6 +13,7 @@ import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
+import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
@@ -105,6 +106,8 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
             ((WelcomeScene) pScene).init();
         else if (pScene instanceof GameScene)
             ((GameScene) pScene).init();
+        else if (pScene instanceof GameRoomScene)
+            ((GameRoomScene) pScene).initScene();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
 
         //Connect google API

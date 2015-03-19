@@ -34,6 +34,7 @@ public class GameScene extends Scene {
     public GameScene() {
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
+
     }
 
     public void init() {
