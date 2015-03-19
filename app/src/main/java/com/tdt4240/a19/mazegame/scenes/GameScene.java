@@ -38,6 +38,7 @@ public class GameScene extends Scene implements ContactListener {
     private Vector2 pressed = new Vector2();
 
     public GameScene() {
+        // TODO: Fix MazeLayer setup
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
 
@@ -50,7 +51,7 @@ public class GameScene extends Scene implements ContactListener {
 
         GameActivity game = GameState.getInstance().getGameActivity();
 
-        mazeLayer.init();
+        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 20, 30);  // pCenterX, pCenterY, mazeX, mazeY
         userLayer.init();
 
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));

@@ -42,6 +42,8 @@ public abstract class Maze {
     private boolean[] horizWalls;
     private boolean[] vertWalls;
 
+    private long seed;
+
     /**
      * A convenience structure that represents one cell.  It contains a cell's
      * coordinates.
@@ -63,6 +65,8 @@ public abstract class Maze {
             this.y = y;
         }
 
+
+
         public String toString() {
             return "(" + x + ", " + y + ")";
         }
@@ -76,13 +80,14 @@ public abstract class Maze {
      * @param width the maze height, in cells
      * @throws IllegalArgumentException if either size non-positive.
      */
-    protected Maze(int width, int height) {
+    protected Maze(long pSeed, int width, int height) {
         if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Size must be positive");
         }
 
         this.width = width;
         this.height = height;
+        this.seed = pSeed;
 
         // Create the walls
 
@@ -273,6 +278,13 @@ public abstract class Maze {
         return height;
     }
 
+    // Added getters for horiWalls and vertWalls
+    public boolean[] getHorizWalls(){
+        return horizWalls;
+    }
+
+    public boolean[] getVertWalls() { return vertWalls; }
+
     /**
      * Prints the maze.  The following characters are used for each part.
      * <ul>
@@ -313,4 +325,6 @@ public abstract class Maze {
         }
         out.println('*'/*'.'*/);
     }
+
+
 }

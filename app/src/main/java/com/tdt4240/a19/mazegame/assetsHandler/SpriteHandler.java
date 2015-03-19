@@ -3,7 +3,7 @@ package com.tdt4240.a19.mazegame.assetsHandler;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 
-import org.andengine.entity.sprite.Sprite;
+
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
@@ -23,6 +23,7 @@ public class SpriteHandler {
 
     private ITextureRegion play_button;
     private ITextureRegion user;
+    private ITextureRegion mazeBackground, mazeHoriWall, mazeVertwall;
 
     public SpriteHandler() {
 
@@ -41,6 +42,11 @@ public class SpriteHandler {
 
         play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
+        mazeBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "BlackBackground.png");
+        mazeHoriWall = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "WhiteHorizontalWall.png");
+        mazeVertwall = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "WhiteVerticalWall.png");
+
+
     }
 
     public void buildAtlases() {
@@ -66,4 +72,10 @@ public class SpriteHandler {
     public ITextureRegion getUserSprite() {
         return user;
     }
+
+    public  ITextureRegion getMazeBackground(){ return mazeBackground;}
+
+    public ITextureRegion getMazeHoriWall(){ return mazeHoriWall;}
+
+    public ITextureRegion getMazeVertwall() { return mazeVertwall; }
 }
