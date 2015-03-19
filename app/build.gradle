@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        MultiMazed {
+            keyAlias 'MultiMazed'
+            keyPassword 'Asdf1234'
+            storeFile file('C:/Users/RoarG/.android/debug.keystore')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.tdt4240.a19.mazegame"
         minSdkVersion 15
@@ -24,4 +31,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':andengine')
     compile project(':andenginephysicsbox2dextension')
+    compile project(':BaseGameUtils')
 }
