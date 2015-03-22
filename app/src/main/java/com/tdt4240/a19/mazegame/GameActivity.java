@@ -87,7 +87,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene());
 
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -112,7 +112,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
         //Connect google API
 
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
 
     }
 

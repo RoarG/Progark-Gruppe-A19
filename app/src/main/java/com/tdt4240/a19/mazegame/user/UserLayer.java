@@ -3,6 +3,9 @@ package com.tdt4240.a19.mazegame.user;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
+import com.tdt4240.a19.mazegame.maze.Maze;
+import com.tdt4240.a19.mazegame.maze.RecursiveBacktrackerMaze;
+import com.tdt4240.a19.mazegame.scenes.GameScene;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
@@ -23,9 +26,19 @@ public class UserLayer extends Entity {
     }
 
     public void init() {
-        GameActivity game = GameState.getInstance().getGameActivity();
+        GameState gameState = GameState.getInstance();
+        GameActivity game = gameState.getGameActivity();
 
-        user = new User(100.0f, 100.0f, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager()) {
+        Sprite mazeBackground = ((GameScene)gameState.getGameScene()).getMazeLayer().getMazeBackground();
+        Maze maze = ((GameScene)gameState.getGameScene()).getMazeLayer().getMaze();
+
+        int xBase = (int)mazeBackground.getHeight()/maze.getWidth();
+        int yBase = (int)mazeBackground.getHeight()/maze.getHeight();
+
+        float startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
+        float startY = ((RecursiveBacktrackerMaze)maze).getStartY() * yBase + 4;
+
+        user = new User(startX, startY, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager()) {
             @Override
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
@@ -33,7 +46,7 @@ public class UserLayer extends Entity {
             }
         };
 
-        attachChild(user);
+        mazeBackground.attachChild(user);
     }
 
     public Sprite getUser() {
