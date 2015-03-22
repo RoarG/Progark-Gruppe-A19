@@ -8,6 +8,7 @@ package com.tdt4240.a19.mazegame.maze;
 
 import java.util.Arrays;
 import java.io.PrintStream;
+import java.util.Random;
 
 /**
  * Implements the basic requirements of a rectangular maze generator.
@@ -41,8 +42,6 @@ public abstract class Maze {
 
     private boolean[] horizWalls;
     private boolean[] vertWalls;
-
-    private long seed;
 
     /**
      * A convenience structure that represents one cell.  It contains a cell's
@@ -80,14 +79,13 @@ public abstract class Maze {
      * @param width the maze height, in cells
      * @throws IllegalArgumentException if either size non-positive.
      */
-    protected Maze(long pSeed, int width, int height) {
+    protected Maze(int width, int height) {
         if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Size must be positive");
         }
 
         this.width = width;
         this.height = height;
-        this.seed = pSeed;
 
         // Create the walls
 
@@ -116,12 +114,12 @@ public abstract class Maze {
         generateMaze();
     }
 
-    public final void generate(long seed) {
-    	reset();
-    	((RecursiveBacktrackerMaze)this).setSeed(seed);
+    public void generate(long seed) {
+        reset();
+        ((RecursiveBacktrackerMaze)this).setSeed(seed);
         generateMaze();
     }
-    
+
     /**
      * Generates the maze using a specific algorithm.  Subclasses implement
      * this.

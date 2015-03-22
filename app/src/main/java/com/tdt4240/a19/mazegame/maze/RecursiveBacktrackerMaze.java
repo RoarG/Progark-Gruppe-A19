@@ -35,12 +35,8 @@ public class RecursiveBacktrackerMaze extends Maze {
      * @param width the maze width
      * @param height the maze height
      */
-    public RecursiveBacktrackerMaze(long seed, int width, int height) {
-        super(seed, width, height);
-
-        rand = new Random(seed);
-        this.startX = rand.nextInt(width);
-        this.startY = rand.nextInt(height);
+    public RecursiveBacktrackerMaze(int width, int height) {
+        super(width, height);
     }
 
     /**
@@ -52,9 +48,9 @@ public class RecursiveBacktrackerMaze extends Maze {
      * @param startX the starting X-coordinate
      * @param startY the starting Y-coordinate
      */
-    public RecursiveBacktrackerMaze(long seed, int width, int height,
+    public RecursiveBacktrackerMaze(int width, int height,
                                     int startX, int startY) {
-        super(seed, width, height);
+        super(width, height);
 
         checkLocation(startX, startY);
 
@@ -66,6 +62,9 @@ public class RecursiveBacktrackerMaze extends Maze {
      * Generate the maze.
      */
     protected void generateMaze() {
+        startX = rand.nextInt(this.getWidth());
+        startY = rand.nextInt(this.getHeight());
+
         int width = getWidth();
         int height = getHeight();
 
@@ -143,13 +142,6 @@ public class RecursiveBacktrackerMaze extends Maze {
         } while (!stack.isEmpty());
     }
 
-    /**
-     * Generates a maze using the specified seed.
-     */
-    protected void generateMaze(long seed) {
-    	rand = new Random(seed);
-    	generateMaze();
-    }
     
     /**
      * Returns a string representation of this object.
@@ -166,4 +158,12 @@ public class RecursiveBacktrackerMaze extends Maze {
 	public void setSeed(long seed) {
 		rand = new Random(seed);
 	}
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
 }
