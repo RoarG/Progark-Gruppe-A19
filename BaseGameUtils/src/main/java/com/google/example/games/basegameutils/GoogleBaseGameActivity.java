@@ -23,6 +23,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.andengine.ui.activity.BaseGameActivity;
+
 /**
  * Example base class for games. This implementation takes care of setting up
  * the API client object and managing its lifecycle. Subclasses only need to
@@ -40,7 +42,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
  *
  * @author Bruno Oliveira (Google)
  */
-public abstract class BaseGameActivity extends FragmentActivity implements
+public abstract class GoogleBaseGameActivity extends BaseGameActivity implements
         GameHelper.GameHelperListener {
 
     // The game helper object. This class is mainly a wrapper around this object.
@@ -60,7 +62,7 @@ public abstract class BaseGameActivity extends FragmentActivity implements
     protected boolean mDebugLog = false;
 
     /** Constructs a BaseGameActivity with default client (GamesClient). */
-    protected BaseGameActivity() {
+    protected GoogleBaseGameActivity() {
         super();
     }
 
@@ -69,7 +71,7 @@ public abstract class BaseGameActivity extends FragmentActivity implements
      * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
      *         CLIENT_PLUS and CLIENT_APPSTATE).
      */
-    protected BaseGameActivity(int requestedClients) {
+    protected GoogleBaseGameActivity(int requestedClients) {
         super();
         setRequestedClients(requestedClients);
     }

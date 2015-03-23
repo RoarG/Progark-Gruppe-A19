@@ -1,14 +1,10 @@
 package com.tdt4240.a19.mazegame;
 
-import android.os.Bundle;
-import android.util.Log;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.plus.Plus;
-
+import com.google.android.gms.*;
 import com.google.example.games.basegameutils.BaseGameUtils;
+
+import com.google.example.games.basegameutils.*;
+
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
@@ -24,7 +20,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.BaseGameActivity;
 
-public class GameActivity extends BaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GameActivity extends GoogleBaseGameActivity  {
 
     public static final int CAMERA_WIDTH = 480;
     public static final int CAMERA_HEIGHT = 800;
@@ -38,13 +34,13 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
     API integration
     */
 
-    private static final String TAG = "TrivialQuest";
+    private static final String TAG = "MultiMazed";
 
     // Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 9001;
 
     // Client used to interact with Google APIs.
-    private GoogleApiClient mGoogleApiClient;
+   // private GoogleApiClient mGoogleApiClient;
 
     // Are we currently resolving a connection failure?
     private boolean mResolvingConnectionFailure = false;
@@ -89,7 +85,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
         pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
 
-        // Create the Google Api Client with access to Plus and Games
+   /*     // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -97,7 +93,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
 
-
+*/
     }
 
     @Override
@@ -110,9 +106,9 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
             ((GameRoomScene) pScene).initScene();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
 
-        //Connect google API
+      /*  //Connect google API
 
-        mGoogleApiClient.connect();
+        mGoogleApiClient.connect();*/
 
     }
 
@@ -125,12 +121,22 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
     }
 
     @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
+    }
+
+/*    @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
 
         Log.d(TAG, "Sign-in succeeded.");
 
-       /* // register listener so we are notified if we receive an invitation to play
+       *//* // register listener so we are notified if we receive an invitation to play
         // while we are in the game
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
 
@@ -144,14 +150,14 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
                 acceptInviteToRoom(inv.getInvitationId());
                 return;
             }
-        }*/
+        }*//*
 
         // TODO: switchToMainScreen
-        /*switchToMainScreen();*/
+        *//*switchToMainScreen();*//*
 
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
         mGoogleApiClient.connect();
@@ -174,6 +180,6 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
                     connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error));
         }
         // TODO: SwitchToScreen her String screen_sign_in
-        /*switchToScreen(R.id.screen_sign_in);*/
-    }
+        *//*switchToScreen(R.id.screen_sign_in);*//*
+    }*/
 }
