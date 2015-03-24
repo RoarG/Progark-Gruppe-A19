@@ -1,5 +1,7 @@
 package com.tdt4240.a19.mazegame;
 
+import android.util.Log;
+
 import com.google.android.gms.*;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
@@ -59,11 +61,13 @@ public class GameActivity extends GoogleBaseGameActivity  {
         //camera.setBoundsEnabled(true);
         GameState.getInstance().setGameActivity(this);
         this.camera = camera;
+        Log.d(TAG, "onCreateEngineOptions() called");
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
     }
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
+
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
         spriteHandler = new SpriteHandler();
@@ -79,12 +83,13 @@ public class GameActivity extends GoogleBaseGameActivity  {
         fontHandler.loadFonts();
 
         pOnCreateResourcesCallback.onCreateResourcesFinished();
+        Log.d(TAG, "onCreateResources() called");
     }
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
         pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
-
+        Log.d(TAG, "onCreateScene() called");
    /*     // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -98,17 +103,21 @@ public class GameActivity extends GoogleBaseGameActivity  {
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-        if (pScene instanceof WelcomeScene)
+        if (pScene instanceof WelcomeScene) {
             ((WelcomeScene) pScene).init();
-        else if (pScene instanceof GameScene)
+        }
+        else if (pScene instanceof GameScene) {
             ((GameScene) pScene).init();
-        else if (pScene instanceof GameRoomScene)
+        }
+        else if (pScene instanceof GameRoomScene) {
             ((GameRoomScene) pScene).initScene();
+        }
         pOnPopulateSceneCallback.onPopulateSceneFinished();
 
       /*  //Connect google API
 
         mGoogleApiClient.connect();*/
+        Log.d(TAG, "onPopulateScene() called");
 
     }
 
@@ -122,12 +131,12 @@ public class GameActivity extends GoogleBaseGameActivity  {
 
     @Override
     public void onSignInFailed() {
-
+        Log.d(TAG, "onSignInFailed() called");
     }
 
     @Override
     public void onSignInSucceeded() {
-
+        Log.d(TAG, "onSignInSucceeded() called");
     }
 
 /*    @Override
