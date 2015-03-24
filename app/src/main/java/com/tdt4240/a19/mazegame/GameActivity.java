@@ -88,8 +88,8 @@ public class GameActivity extends GoogleBaseGameActivity  {
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
-        Log.d(TAG, "onCreateScene() called");
+                pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
+                Log.d(TAG, "onCreateScene() called");
    /*     // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -99,6 +99,9 @@ public class GameActivity extends GoogleBaseGameActivity  {
                 .build();
 
 */
+         /*  //Connect google API
+
+        mGoogleApiClient.connect();*/
     }
 
     @Override
@@ -114,9 +117,7 @@ public class GameActivity extends GoogleBaseGameActivity  {
         }
         pOnPopulateSceneCallback.onPopulateSceneFinished();
 
-      /*  //Connect google API
 
-        mGoogleApiClient.connect();*/
         Log.d(TAG, "onPopulateScene() called");
 
     }

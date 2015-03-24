@@ -31,6 +31,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile project(':andengine')
-    compile project(':andenginephysicsbox2dextension')
     compile project(':BaseGameUtils')
+    compile project(':andenginephysicsbox2dextension')
 }
