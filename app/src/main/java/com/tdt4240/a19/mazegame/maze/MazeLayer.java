@@ -4,6 +4,10 @@ import android.util.Log;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
@@ -90,15 +94,8 @@ public class MazeLayer extends Entity {
                 walls.add(wall);
 
                 Body body = PhysicsFactory.createBoxBody(physicsWorld, wall, BodyDef.BodyType.StaticBody, PhysicsFactory.createFixtureDef(0, 0, 0));
-                body.setUserData("horizontalWalls");
+                body.setUserData("horizontal");
                 wallBodies.add(body);
-
-                /*physicsWorld.registerPhysicsConnector(new PhysicsConnector(wall, body, false, false) {
-                    @Override
-                    public void onUpdate(float pSecondsElapsed) {
-                        //super.onUpdate(pSecondsElapsed);
-                    }
-                });*/
             }
             x++;
             if (x % mazeX == 0){
@@ -120,15 +117,8 @@ public class MazeLayer extends Entity {
                 walls.add(wall);
 
                 Body body = PhysicsFactory.createBoxBody(physicsWorld, wall, BodyDef.BodyType.StaticBody, PhysicsFactory.createFixtureDef(0, 0, 0));
-                body.setUserData("verticalWalls");
+                body.setUserData("vertical");
                 wallBodies.add(body);
-
-                /*physicsWorld.registerPhysicsConnector(new PhysicsConnector(wall, body, false, false) {
-                    @Override
-                    public void onUpdate(float pSecondsElapsed) {
-                        //super.onUpdate(pSecondsElapsed);
-                    }
-                });*/
             }
             x++;
             if (x % (mazeX+1) == 0){

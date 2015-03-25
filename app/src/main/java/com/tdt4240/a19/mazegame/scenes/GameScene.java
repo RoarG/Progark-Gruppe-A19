@@ -117,10 +117,88 @@ public class GameScene extends Scene implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        Body a = contact.getFixtureA().getBody();
-        Body b = contact.getFixtureB().getBody();
+        final Body a = contact.getFixtureA().getBody();
+        final Body b = contact.getFixtureB().getBody();
 
-        Log.d("Collision", "Collision");
+        if (a.getUserData().equals("player")) {
+            if (b.getUserData().equals("vertical")) {
+                if (a.getPosition().x <= b.getPosition().x) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x - 0.01f, a.getPosition().y, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x + 0.01f, a.getPosition().y, 0);
+                        }
+                    });
+                }
+            } else if (b.getUserData().equals("horizontal")) {
+                if (a.getPosition().y <= b.getPosition().y) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x, a.getPosition().y - 0.01f, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x, a.getPosition().y + 0.01f, 0);
+                        }
+                    });
+                }
+            }
+        }
+
+        if (b.getUserData().equals("player")) {
+            if (a.getUserData().equals("vertical")) {
+                if (b.getPosition().x <= a.getPosition().x) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x - 0.01f, b.getPosition().y, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x + 0.01f, b.getPosition().y, 0);
+                        }
+                    });
+                }
+            } else if (a.getUserData().equals("horizontal")) {
+                if (b.getPosition().y <= a.getPosition().y) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x, b.getPosition().y - 0.01f, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x, b.getPosition().y + 0.01f, 0);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override
