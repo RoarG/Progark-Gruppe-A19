@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
 
         <meta-data android:name="com.google.android.gms.games.APP_ID"
-            android:value="863276970973" />
+            android:value="@string/app_id" />
 
         <activity
             android:name=".GameActivity"
