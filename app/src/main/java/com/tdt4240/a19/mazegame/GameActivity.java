@@ -10,13 +10,17 @@ import com.google.android.gms.plus.Plus;
 
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -33,6 +37,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
     private SpriteHandler spriteHandler;
     private FontHandler fontHandler;
+    private ResourcesManager resourcesManager;
 
     /*
     API integration
@@ -82,12 +87,14 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
         fontHandler.createFonts();
         fontHandler.loadFonts();
 
+        ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
+        resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
     }
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene());
+        SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
 
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -102,12 +109,18 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-        if (pScene instanceof WelcomeScene)
-            ((WelcomeScene) pScene).init();
-        else if (pScene instanceof GameScene)
-            ((GameScene) pScene).init();
-        else if (pScene instanceof GameRoomScene)
-            ((GameRoomScene) pScene).initScene();
+        mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback()
+        {
+            public void onTimePassed(final TimerHandler pTimerHandler)
+            {
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                SceneManager.getInstance().createMenuScene();
+                // load menu resources, create menu scene
+                // set menu scene using scene manager
+                // disposeSplashScene();
+                // READ NEXT ARTICLE FOR THIS PART.
+            }
+        }));
         pOnPopulateSceneCallback.onPopulateSceneFinished();
 
         //Connect google API
@@ -115,6 +128,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
         //mGoogleApiClient.connect();
 
     }
+
 
     public SpriteHandler getSpriteHandler() {
         return spriteHandler;
