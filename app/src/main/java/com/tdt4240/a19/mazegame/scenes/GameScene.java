@@ -31,8 +31,12 @@ public class GameScene extends Scene {
 
     private Vector2 pressed = new Vector2();
 
+    /**
+     * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
+     */
+    private int mazeSize;
+
     public GameScene() {
-        // TODO: Fix MazeLayer setup
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
 
@@ -41,10 +45,11 @@ public class GameScene extends Scene {
     public void init() {
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
+        setMazeSize("large");
 
         GameActivity game = GameState.getInstance().getGameActivity();
 
-        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 20, 30);  // pCenterX, pCenterY, mazeX, mazeY
+        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 10*mazeSize, 15*mazeSize);  // pCenterX, pCenterY, mazeX, mazeY
         userLayer.init();
 
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
@@ -74,6 +79,33 @@ public class GameScene extends Scene {
                 break;
         }
         return false;
+    }
+
+    /**
+     * Sets the mazeSize
+     * @param size
+     *
+     * small = 1
+     * medium = 2
+     * large = 3
+     */
+    public void setMazeSize(String size){
+        size = size.toLowerCase();
+        switch (size){
+            case "small":
+                mazeSize = 1;
+                break;
+            case "medium":
+                mazeSize = 2;
+                System.out.println("Set layout to: 2");
+                break;
+            case "large":
+                mazeSize = 3;
+                break;
+            default:
+                mazeSize = 1;
+                System.out.println("Set layout to: default");
+        }
     }
 
     public PhysicsWorld getPhysicsWorld() {
