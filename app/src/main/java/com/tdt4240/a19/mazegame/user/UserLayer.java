@@ -4,11 +4,14 @@ import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.maze.Maze;
+import com.tdt4240.a19.mazegame.maze.MazeLayer;
 import com.tdt4240.a19.mazegame.maze.RecursiveBacktrackerMaze;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 
 import java.util.ArrayList;
@@ -25,20 +28,20 @@ public class UserLayer extends Entity {
 
     }
 
-    public void init() {
+    public void init(MazeLayer mazeLayer, PhysicsWorld physicsWorld) {
         GameState gameState = GameState.getInstance();
         GameActivity game = gameState.getGameActivity();
 
-        Sprite mazeBackground = ((GameScene)gameState.getGameScene()).getMazeLayer().getMazeBackground();
-        Maze maze = ((GameScene)gameState.getGameScene()).getMazeLayer().getMaze();
+        Sprite mazeBackground = mazeLayer.getMazeBackground();
+        Maze maze = mazeLayer.getMaze();
 
-        int xBase = (int)mazeBackground.getHeight()/maze.getWidth();
+        int xBase = (int)mazeBackground.getWidth()/maze.getWidth();
         int yBase = (int)mazeBackground.getHeight()/maze.getHeight();
 
         float startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
         float startY = (((RecursiveBacktrackerMaze)maze).getHeight() -1 ) * yBase + 4;
 
-        user = new User(startX, startY, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager()) {
+        user = new User(startX, startY, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager(), physicsWorld) {
             @Override
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
