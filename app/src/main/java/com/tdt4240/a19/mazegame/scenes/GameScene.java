@@ -43,8 +43,12 @@ public class GameScene extends Scene implements ContactListener {
 
     private Vector2 pressed = new Vector2();
 
+    /**
+     * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
+     */
+    private int mazeSize;
+
     public GameScene() {
-        // TODO: Fix MazeLayer setup
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
 
@@ -55,9 +59,13 @@ public class GameScene extends Scene implements ContactListener {
 
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
+
+        setMazeSize("small");
+
         physicsWorld.setContactListener(this);
 
-        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 20, 30);  // pCenterX, pCenterY, mazeX, mazeY
+
+        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 10*mazeSize, 15*mazeSize);  // pCenterX, pCenterY, mazeX, mazeY
         userLayer.init();
 
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
@@ -107,6 +115,33 @@ public class GameScene extends Scene implements ContactListener {
         return false;
     }
 
+    /**
+     * Sets the mazeSize
+     * @param size
+     *
+     * small = 1
+     * medium = 2
+     * large = 3
+     */
+    public void setMazeSize(String size){
+        size = size.toLowerCase();
+        switch (size){
+            case "small":
+                mazeSize = 1;
+                break;
+            case "medium":
+                mazeSize = 2;
+                System.out.println("Set layout to: 2");
+                break;
+            case "large":
+                mazeSize = 3;
+                break;
+            default:
+                mazeSize = 1;
+                System.out.println("Set layout to: default");
+        }
+    }
+
     public PhysicsWorld getPhysicsWorld() {
         return physicsWorld;
     }
@@ -115,12 +150,92 @@ public class GameScene extends Scene implements ContactListener {
         return mazeLayer;
     }
 
+    public UserLayer getUserLayer() { return userLayer; }
+
     @Override
     public void beginContact(Contact contact) {
-        Body a = contact.getFixtureA().getBody();
-        Body b = contact.getFixtureB().getBody();
+        final Body a = contact.getFixtureA().getBody();
+        final Body b = contact.getFixtureB().getBody();
 
-        Log.d("Collision", "Collision");
+        if (a.getUserData().equals("player")) {
+            if (b.getUserData().equals("vertical")) {
+                if (a.getPosition().x <= b.getPosition().x) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x - 0.01f, a.getPosition().y, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x + 0.01f, a.getPosition().y, 0);
+                        }
+                    });
+                }
+            } else if (b.getUserData().equals("horizontal")) {
+                if (a.getPosition().y <= b.getPosition().y) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x, a.getPosition().y - 0.01f, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            a.setTransform(a.getPosition().x, a.getPosition().y + 0.01f, 0);
+                        }
+                    });
+                }
+            }
+        }
+
+        if (b.getUserData().equals("player")) {
+            if (a.getUserData().equals("vertical")) {
+                if (b.getPosition().x <= a.getPosition().x) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x - 0.01f, b.getPosition().y, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x + 0.01f, b.getPosition().y, 0);
+                        }
+                    });
+                }
+            } else if (a.getUserData().equals("horizontal")) {
+                if (b.getPosition().y <= a.getPosition().y) {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x, b.getPosition().y - 0.01f, 0);
+                        }
+                    });
+                } else {
+                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            b.setTransform(b.getPosition().x, b.getPosition().y + 0.01f, 0);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override

@@ -43,6 +43,9 @@ public abstract class Maze {
     private boolean[] horizWalls;
     private boolean[] vertWalls;
 
+    private long seed;
+
+
     /**
      * A convenience structure that represents one cell.  It contains a cell's
      * coordinates.
