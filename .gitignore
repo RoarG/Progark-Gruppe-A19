@@ -12,3 +12,4 @@ app/app.iml
 andenginephysicsbox2dextension/andenginephysicsbox2dextension.iml
 *.xml
 .idea/gradle.xml
+*.iml

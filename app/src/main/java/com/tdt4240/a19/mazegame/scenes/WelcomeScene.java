@@ -1,5 +1,7 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import android.util.Log;
+
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 
@@ -56,10 +58,11 @@ public class WelcomeScene extends Scene implements MenuScene.IOnMenuItemClickLis
 
     @Override
     public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
+        Log.d("onMenuItemClicked", "Clicked");
         switch(pMenuItem.getID()){
             case MENU_PLAY:
-
-                GameState.getInstance().getGameScene();
+                SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAMESCENE);
+                Log.d("Play", "Shit");
                 return true;
             case MENU_OPTIONS:
                 System.out.println("TEST");

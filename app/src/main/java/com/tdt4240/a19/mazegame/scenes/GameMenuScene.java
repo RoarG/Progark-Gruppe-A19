@@ -1,5 +1,6 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import org.andengine.engine.Engine;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -74,7 +75,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         switch(pMenuItem.getID())
         {
             case MENU_PLAY:
-                //SceneManager.getInstance().loadGameScene(engine);
+                SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_OPTIONS:
                 return true;

@@ -34,7 +34,7 @@ import java.util.Vector;
 /**
  * Created by Runar on 06.03.2015.
  */
-public class GameScene extends Scene implements ContactListener {
+public class GameScene extends BaseScene implements ContactListener {
 
     private PhysicsWorld physicsWorld;
 
@@ -45,12 +45,48 @@ public class GameScene extends Scene implements ContactListener {
 
     public GameScene() {
         // TODO: Fix MazeLayer setup
+
+
+    }
+
+    @Override
+    public void createScene() {
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
+        GameActivity game = GameState.getInstance().getGameActivity();
+
+        physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
+        registerUpdateHandler(physicsWorld);
+        physicsWorld.setContactListener(this);
+
+        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 20, 30, physicsWorld);  // pCenterX, pCenterY, mazeX, mazeY
+        userLayer.init(mazeLayer, physicsWorld);
+
+        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+
+        attachChild(mazeLayer);
+        attachChild(userLayer);
+
+        setupFPSCounter(game);
+    }
+
+    @Override
+    public void onBackKeyPressed() {
+
+    }
+
+    @Override
+    public SceneManager.SceneType getSceneType() {
+        return null;
+    }
+
+    @Override
+    public void disposeScene() {
 
     }
 
     public void init() {
+        /**
         GameActivity game = GameState.getInstance().getGameActivity();
 
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
@@ -66,7 +102,9 @@ public class GameScene extends Scene implements ContactListener {
         attachChild(userLayer);
 
         setupFPSCounter(game);
+         **/
     }
+
 
     private void setupFPSCounter(GameActivity game) {
         final FPSCounter fpsCounter = new FPSCounter();

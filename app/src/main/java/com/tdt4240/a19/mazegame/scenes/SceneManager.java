@@ -1,5 +1,6 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 
@@ -34,9 +35,17 @@ public class SceneManager {
     }
 
     public void setScene(BaseScene scene) {
-        engine.setScene(scene);
+        final BaseScene pScene = scene;
+        GameActivity game = GameState.getInstance().getGameActivity();
+        game.runOnUpdateThread(new Runnable() {
+            @Override
+            public void run() {
+                engine.setScene(pScene);
+            }
+        });
         currentScene = scene;
-        currentSceneType = scene.getSceneType();
+        int i = 0;
+       // currentSceneType = scene.getSceneType();
     }
 
     public void setScene(SceneType sceneType){
@@ -44,9 +53,11 @@ public class SceneManager {
            /*case SCENE_WELCOMESCENE:
                 setScene(welcomeScene);
                 break;
-            */case SCENE_GAMESCENE:
+                */
+            case SCENE_GAMESCENE:
                 setScene(gameScene);
                 break;
+
             /*case SCENE_GAMEROOMSCENE:
                 setScene(gameRoomScene);
                 break;
@@ -108,5 +119,7 @@ public class SceneManager {
             }
         }));
     }
+
+    public GameScene getGameScene(){ return gameScene; }
 
 }

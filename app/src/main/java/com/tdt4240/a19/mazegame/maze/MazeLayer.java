@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
@@ -41,7 +42,7 @@ public class MazeLayer extends Entity {
 
     }
 
-    public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY) {
+    public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY, PhysicsWorld world) {
         // BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         GameActivity game = GameState.getInstance().getGameActivity();
         this.mazeX = pMazeX;
@@ -58,7 +59,7 @@ public class MazeLayer extends Entity {
         // this.backgroundColor = "White";
         // this.wallColor = "Black";
         setupBackground(game);
-        setupWalls(game);
+        setupWalls(game, world);
     }
 
     private void setupBackground(GameActivity game){
@@ -67,7 +68,7 @@ public class MazeLayer extends Entity {
         attachChild(background);
     }
 
-    private void setupWalls(GameActivity game){
+    private void setupWalls(GameActivity game, PhysicsWorld physicsWorld){
         // #TODO: Implement algorithm for assigning walls positions
         boolean[] vertWalls = maze.getVertWalls();      // 11x10
         boolean[] horiWalls = maze.getHorizWalls();     // 10x11
@@ -75,8 +76,6 @@ public class MazeLayer extends Entity {
         int yBase = (int)background.getHeight()/mazeY;    // should be 450/20 = 15
         int xBase = (int)background.getWidth()/mazeX;     // should be 300/20 = 15
 
-
-        PhysicsWorld physicsWorld = ((GameScene) GameState.getInstance().getGameScene()).getPhysicsWorld();
 
         // setup horizontal walls on the top and bottom (frame)
         int x = 0;
