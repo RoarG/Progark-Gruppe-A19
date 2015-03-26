@@ -62,7 +62,8 @@ public class WelcomeScene extends Scene implements MenuScene.IOnMenuItemClickLis
                 GameState.getInstance().getGameScene();
                 return true;
             case MENU_OPTIONS:
-                System.out.println("TEST");
+               // System.out.println("TEST");
+                GameState.getInstance().getSettingsScene();
                 return true;
             default:
                 return false;

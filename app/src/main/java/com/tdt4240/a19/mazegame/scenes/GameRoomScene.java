@@ -31,6 +31,8 @@ public class GameRoomScene extends Scene {
             @Override
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                //GameState.getInstance().getSettingsScene();
+               // startButton.setColor(new Color(0.09804f, 0.6274f, 0.8784f));
                 return true;
             }
         };
@@ -39,5 +41,7 @@ public class GameRoomScene extends Scene {
 
         Text startText = new Text(45.0f, 5.0f, game.getFontHandler().getBasicFont(), "Start game", game.getVertexBufferObjectManager());
         startButton.attachChild(startText);
+
+
     }
 }
