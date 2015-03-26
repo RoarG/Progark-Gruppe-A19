@@ -12,7 +12,9 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GBaseGameActivity;
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
+import com.tdt4240.a19.mazegame.scenes.CountdownScene;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SettingsScene;
 import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
@@ -89,7 +91,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene());
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameRoomScene());
 
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -120,6 +122,10 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
             ((GameScene) pScene).init();
         else if (pScene instanceof GameRoomScene)
             ((GameRoomScene) pScene).initScene();
+        else if (pScene instanceof SettingsScene)
+            ((SettingsScene) pScene).init();
+        else if (pScene instanceof CountdownScene)
+            ((CountdownScene) pScene).init();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
         Log.w(TAG, "onPopulateScene");
         //Connect google API
