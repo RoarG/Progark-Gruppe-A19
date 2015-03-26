@@ -60,7 +60,7 @@ public class GameScene extends Scene implements ContactListener {
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
 
-        setMazeSize("large");
+        setMazeSize("small");
 
         physicsWorld.setContactListener(this);
 
@@ -149,6 +149,8 @@ public class GameScene extends Scene implements ContactListener {
     public MazeLayer getMazeLayer() {
         return mazeLayer;
     }
+
+    public UserLayer getUserLayer() { return userLayer; }
 
     @Override
     public void beginContact(Contact contact) {
