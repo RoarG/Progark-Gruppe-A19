@@ -30,7 +30,7 @@ public class SettingsScene extends Scene {
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 
-
+                //Mute/unmute the sound of the game on buttonclick
                 return true;
             }
         };
