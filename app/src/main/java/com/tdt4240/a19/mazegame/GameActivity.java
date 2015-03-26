@@ -9,6 +9,7 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.plus.Plus;
 
 import com.google.example.games.basegameutils.BaseGameUtils;
+import com.google.example.games.basegameutils.GBaseGameActivity;
 import com.tdt4240.a19.mazegame.assetsHandler.FontHandler;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
@@ -24,7 +25,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.BaseGameActivity;
 
-public class GameActivity extends BaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GameActivity extends GBaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int CAMERA_WIDTH = 480;
     public static final int CAMERA_HEIGHT = 800;
@@ -38,7 +39,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
     API integration
     */
 
-    private static final String TAG = "TrivialQuest";
+    private static final String TAG = "MultiMazed";
 
     // Request code used to invoke sign in user interactions.
     private static final int RC_SIGN_IN = 9001;
@@ -54,7 +55,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
     // Set to true to automatically start the sign in flow when the Activity starts.
     // Set to false to require the user to click the button in order to sign in.
-    private boolean mAutoStartSignInFlow = true;
+    private boolean mAutoStartSignInFlow = false;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -63,13 +64,14 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
         //camera.setBoundsEnabled(true);
         GameState.getInstance().setGameActivity(this);
         this.camera = camera;
+        Log.w(TAG, "onCreateEngineOptions");
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
     }
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
+        Log.w(TAG, "onCreateResources");
         spriteHandler = new SpriteHandler();
         spriteHandler.setupAtlases();
         spriteHandler.setupSprites();
@@ -87,7 +89,7 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
 
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
-        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getWelcomeScene());
+        pOnCreateSceneCallback.onCreateSceneFinished(GameState.getInstance().getGameScene());
 
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -96,9 +98,19 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
+        Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
+        /*mGoogleApiClient.connect();*/
+    }
 
+/*
+    @Override
+    protected void onStart() {
+        super.onStart();
+     */
+/*   mGoogleApiClient.connect();*//*
 
     }
+*/
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
@@ -109,10 +121,10 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
         else if (pScene instanceof GameRoomScene)
             ((GameRoomScene) pScene).initScene();
         pOnPopulateSceneCallback.onPopulateSceneFinished();
-
+        Log.w(TAG, "onPopulateScene");
         //Connect google API
 
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
 
     }
 
@@ -175,5 +187,15 @@ public class GameActivity extends BaseGameActivity implements GoogleApiClient.Co
         }
         // TODO: SwitchToScreen her String screen_sign_in
         /*switchToScreen(R.id.screen_sign_in);*/
+    }
+
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 }

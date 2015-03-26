@@ -5,7 +5,6 @@ android {
         MultiMazed {
             keyAlias 'MultiMazed'
             keyPassword 'Asdf1234'
-            storeFile file('C:/Users/RoarG/.android/debug.keystore')
             storePassword 'android'
         }
     }
