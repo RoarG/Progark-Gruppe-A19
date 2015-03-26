@@ -25,6 +25,8 @@ public class RecursiveBacktrackerMaze extends Maze {
 
     private int startX;
     private int startY;
+    private int endX;
+    private int endY;
 
     private Random rand;
 
@@ -64,6 +66,9 @@ public class RecursiveBacktrackerMaze extends Maze {
     protected void generateMaze() {
         startX = rand.nextInt(this.getWidth());
         startY = rand.nextInt(this.getHeight());
+
+        endX = rand.nextInt(this.getWidth());
+        endY = rand.nextInt(this.getHeight());
 
         int width = getWidth();
         int height = getHeight();
@@ -166,4 +171,8 @@ public class RecursiveBacktrackerMaze extends Maze {
     public int getStartY() {
         return startY;
     }
+
+    public  int getEndX() { return endX; }
+
+    public int getEndY() { return endY; }
 }

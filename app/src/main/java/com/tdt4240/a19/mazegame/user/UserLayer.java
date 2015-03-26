@@ -39,7 +39,7 @@ public class UserLayer extends Entity {
         int yBase = (int)mazeBackground.getHeight()/maze.getHeight();
 
         float startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
-        float startY = ((RecursiveBacktrackerMaze)maze).getStartY() * yBase + 4;
+        float startY = (((RecursiveBacktrackerMaze)maze).getHeight() -1 ) * yBase + 4;
 
         user = new User(startX, startY, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager(), physicsWorld) {
             @Override
