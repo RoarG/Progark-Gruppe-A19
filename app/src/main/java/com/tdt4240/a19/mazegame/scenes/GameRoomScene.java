@@ -1,5 +1,7 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import android.os.CountDownTimer;
+
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 
@@ -17,12 +19,15 @@ public class GameRoomScene extends Scene {
 
     private boolean singlePlayer = false;
     private ButtonSprite startButton;
+    //private CountDownTimer timer;
 
     public void initScene() {
         //asd
         GameActivity game = GameState.getInstance().getGameActivity();
 
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+        //final Text gameIsStarting = new Text(0, 0, game.getFontHandler().getBasicFont(), "Game Is Starting In:", "Game Is Starting In: XX".length(), game.getVertexBufferObjectManager());
+        //attachChild(gameIsStarting);
 
         float x = 165.0f;
         float y = 300.0f;
@@ -31,6 +36,19 @@ public class GameRoomScene extends Scene {
             @Override
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                //GameState.getInstance().getSettingsScene();
+               // startButton.setColor(new Color(0.09804f, 0.6274f, 0.8784f));
+                //timer = new CountDownTimer(10000, 1000) {
+                    //@Override
+                    //public void onTick(long millisUntilFinished) {
+                        //gameIsStarting.setText("Game is starting in: " + millisUntilFinished / 1000);
+                    //}
+
+                    //@Override
+                    //public void onFinish() {
+
+                    //}
+                //}.start();
                 return true;
             }
         };
@@ -39,5 +57,7 @@ public class GameRoomScene extends Scene {
 
         Text startText = new Text(45.0f, 5.0f, game.getFontHandler().getBasicFont(), "Start game", game.getVertexBufferObjectManager());
         startButton.attachChild(startText);
+
+
     }
 }
