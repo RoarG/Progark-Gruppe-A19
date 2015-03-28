@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.plus.Plus;
 
 import com.google.example.games.basegameutils.BaseGameUtils;
@@ -30,6 +31,8 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import java.util.ArrayList;
+
 public class GameActivity extends GBaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int CAMERA_WIDTH = 480;
@@ -42,7 +45,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     private ResourcesManager resourcesManager;
 
     /*
-    API integration
+    API integration Basic
     */
 
     private static final String TAG = "MultiMazed";
@@ -62,6 +65,31 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     // Set to true to automatically start the sign in flow when the Activity starts.
     // Set to false to require the user to click the button in order to sign in.
     private boolean mAutoStartSignInFlow = false;
+
+    /*
+    API integration MP
+    */
+
+    // Room ID where the currently active game is taking place; null if we're
+    // not playing.
+    String mRoomId = null;
+
+    // Are we playing in multiplayer mode?
+    boolean mMultiplayer = false;
+
+    // The participants in the currently active game
+    ArrayList<Participant> mParticipants = null;
+
+    // My participant ID in the currently active game
+    String mMyId = null;
+
+    // If non-null, this is the id of the invitation we received via the
+    // invitation listener
+    String mIncomingInvitationId = null;
+
+    // Message buffer for sending messages
+    byte[] mMsgBuf = new byte[2];
+
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -108,10 +136,12 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
-        /*mGoogleApiClient.connect();*/
+
     }
 
 /*
+
+    // TODO: Se om det er behov for å kalle connect. Står på auto connect atm.
     @Override
     protected void onStart() {
         super.onStart();
