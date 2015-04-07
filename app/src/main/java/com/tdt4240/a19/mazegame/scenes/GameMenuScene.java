@@ -1,35 +1,30 @@
 package com.tdt4240.a19.mazegame.scenes;
 
-import android.util.Log;
-
-import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
-
-import org.andengine.entity.scene.IOnSceneTouchListener;
-import org.andengine.entity.scene.Scene;
+import org.andengine.engine.Engine;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
-import org.andengine.entity.sprite.ButtonSprite;
+import org.andengine.engine.camera.Camera;
 import org.andengine.entity.text.Text;
-import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.color.Color;
 
+import com.tdt4240.a19.mazegame.GameActivity;
+import com.tdt4240.a19.mazegame.GameState;
+import com.tdt4240.a19.mazegame.scenes.BaseScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
+
 /**
- * Created by runar on 3/5/15.
+ * Created by mathi_000 on 25.03.2015.
  */
-public class WelcomeScene extends Scene implements MenuScene.IOnMenuItemClickListener{
-
-
+public class GameMenuScene  extends BaseScene implements org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener{
     private MenuScene menuChildScene;
     private final int MENU_PLAY = 0;
     private final int MENU_OPTIONS = 1;
 
-    public void init() {
+    private void createMenuChildScene()
+    {
         GameActivity game = GameState.getInstance().getGameActivity();
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
         menuChildScene = new MenuScene(game.getEngine().getCamera());
@@ -55,18 +50,34 @@ public class WelcomeScene extends Scene implements MenuScene.IOnMenuItemClickLis
 
         setChildScene(menuChildScene);
     }
+    @Override
+    public void createScene() {
+        createMenuChildScene();
+    }
 
     @Override
-    public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
-        Log.d("onMenuItemClicked", "Clicked");
-        switch(pMenuItem.getID()){
+    public void onBackKeyPressed() {
+        System.exit(0);
+    }
+
+    @Override
+    public SceneManager.SceneType getSceneType() {
+        return SceneManager.SceneType.SCENE_MENUSCENE;
+    }
+
+    @Override
+    public void disposeScene() {
+
+    }
+
+    @Override
+    public boolean onMenuItemClicked(org.andengine.entity.scene.menu.MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
+        switch(pMenuItem.getID())
+        {
             case MENU_PLAY:
-                SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAMESCENE);
-                Log.d("Play", "Shit");
+                SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_OPTIONS:
-               // System.out.println("TEST");
-                GameState.getInstance().getSettingsScene();
                 return true;
             default:
                 return false;

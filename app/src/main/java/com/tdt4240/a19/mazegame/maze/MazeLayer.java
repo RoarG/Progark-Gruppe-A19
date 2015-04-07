@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.sprite.Sprite;
@@ -18,6 +19,8 @@ import org.andengine.entity.sprite.batch.SpriteBatch;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.opengl.texture.Texture;
+import org.andengine.opengl.texture.region.ITextureRegion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,15 +68,7 @@ public class MazeLayer extends Entity {
 
     }
 
-    /**
-     * Initialize variables, generate maze based on seed and setup the maze.
-     *
-     * @param pCenterX
-     * @param pCenterY
-     * @param pMazeX
-     * @param pMazeY
-     */
-    public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY) {
+    public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY, PhysicsWorld world) {
         // BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         GameActivity game = GameState.getInstance().getGameActivity();
         this.mazeX = pMazeX;
@@ -94,8 +89,9 @@ public class MazeLayer extends Entity {
          setLayout(3);
 
         setupBackground(game);
+        setupWalls(game, world);
         setupStartNGoal(game);
-        setupWalls(game);
+
     }
 
     /**
@@ -108,19 +104,14 @@ public class MazeLayer extends Entity {
         attachChild(background);
     }
 
-    /**
-     * Sets up the walls
-     * @param game
-     */
-    private void setupWalls(GameActivity game){
+
+    private void setupWalls(GameActivity game, PhysicsWorld physicsWorld){
         boolean[] vertWalls = maze.getVertWalls();      // 11x10
         boolean[] horiWalls = maze.getHorizWalls();     // 10x11
 
         // Based on size of background and maze it sets the xBase and yBase
         int yBase = (int)background.getHeight()/mazeY;    // should be 450/20 = 15
         int xBase = (int)background.getWidth()/mazeX;     // should be 300/20 = 15
-
-        PhysicsWorld physicsWorld = ((GameScene) GameState.getInstance().getGameScene()).getPhysicsWorld();
 
         // setup horizontal walls on the top and bottom (frame)
         int x = 0;
@@ -149,6 +140,7 @@ public class MazeLayer extends Entity {
 
         x = 0;
         y = 0;
+        // game.getSpriteHandler().getVertWall(wallColor, mazeSize).getTexture();
         final SpriteBatch verticalBatch = new SpriteBatch(game.getSpriteHandler().getVertWall(wallColor, mazeSize).getTexture(), vertWalls.length, game.getVertexBufferObjectManager());
         verticalBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         for (boolean bol : vertWalls) {

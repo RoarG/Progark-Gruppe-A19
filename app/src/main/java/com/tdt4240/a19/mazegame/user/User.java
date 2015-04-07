@@ -10,6 +10,7 @@ import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.maze.Maze;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
+import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
@@ -37,13 +38,12 @@ public class User extends Sprite {
     private boolean canMoveEast = true;
     private boolean canMoveWest = true;
 
-    public User(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager) {
+    public User(float pX, float pY, ITextureRegion pTextureRegion, VertexBufferObjectManager pVertexBufferObjectManager, PhysicsWorld physicsWorld) {
         super(pX, pY, pTextureRegion, pVertexBufferObjectManager);
-        createPhysics();
+        createPhysics(physicsWorld);
     }
 
-    private void createPhysics() {
-        PhysicsWorld physicsWorld = ((GameScene)GameState.getInstance().getGameScene()).getPhysicsWorld();
+    private void createPhysics(PhysicsWorld physicsWorld) {
 
         body = PhysicsFactory.createBoxBody(physicsWorld, this, BodyDef.BodyType.DynamicBody, PhysicsFactory.createFixtureDef(0, 0, 0));
         body.setUserData("player");

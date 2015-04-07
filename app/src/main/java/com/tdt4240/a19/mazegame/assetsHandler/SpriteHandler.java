@@ -87,7 +87,7 @@ public class SpriteHandler {
         // 20x30: Vertical walls
         wvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "wvw20x30.png");
         bvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "bvw20x30.png");
-        rhw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rvw20x30.png");
+        rvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rvw20x30.png");
         tvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "tvw20x30.png");
 
         // 20x30: Start and goal
@@ -221,6 +221,8 @@ public class SpriteHandler {
     }
 
     public ITextureRegion getVertWall(String color, int mazeSize) {
+        System.out.println("Color: " + color);
+        System.out.println("mazeSize: " + mazeSize);
         if (mazeSize == 1){
             switch (color){
                 case "White":

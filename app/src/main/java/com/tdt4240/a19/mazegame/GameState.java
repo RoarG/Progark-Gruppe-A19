@@ -16,9 +16,12 @@ public class GameState {
 
     private static final GameState gameState = new GameState();
 
+    /**
     private Scene welcome = new WelcomeScene();
     private Scene game = new GameScene();
     private Scene gameRoom = new GameRoomScene();
+    **/
+
     private Scene settings = new SettingsScene();
     private Scene countdown = new CountdownScene();
 
@@ -28,9 +31,11 @@ public class GameState {
 
     }
 
+    /**
     public Scene getWelcomeScene() {
         return welcome;
     }
+     **/
 
     public static GameState getInstance() {
         return gameState;
@@ -44,6 +49,7 @@ public class GameState {
         return gameActivity;
     }
 
+    /**
     public Scene getGameScene() {
         return game;
     }
@@ -51,6 +57,8 @@ public class GameState {
     public Scene getGameRoomScene() {
         return gameRoom;
     }
+     **/
+
 
     public Scene getSettingsScene() { return settings; }
 
