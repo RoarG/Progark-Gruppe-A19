@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 import com.tdt4240.a19.mazegame.maze.MazeLayer;
 import com.tdt4240.a19.mazegame.user.User;
 import com.tdt4240.a19.mazegame.user.UserLayer;
@@ -28,6 +28,7 @@ import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
+import org.andengine.util.system.SystemUtils;
 
 import java.util.Vector;
 
@@ -43,6 +44,9 @@ public class GameScene extends BaseScene implements ContactListener {
 
     private Vector2 pressed = new Vector2();
 
+    private long endTime = 0;
+    private long startTime;
+
     /**
      * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
      */
@@ -57,7 +61,7 @@ public class GameScene extends BaseScene implements ContactListener {
     public void createScene() {
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
-        GameActivity game = GameState.getInstance().getGameActivity();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
@@ -74,6 +78,8 @@ public class GameScene extends BaseScene implements ContactListener {
         attachChild(userLayer);
 
         setupFPSCounter(game);
+
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -120,7 +126,7 @@ public class GameScene extends BaseScene implements ContactListener {
         final FPSCounter fpsCounter = new FPSCounter();
         registerUpdateHandler(fpsCounter);
 
-        final Text fpsText = new Text(0, 0, game.getFontHandler().getBasicFont(), "FPS:", "FPS: XXXXX".length(), game.getVertexBufferObjectManager());
+        final Text fpsText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "FPS:", "FPS: XXXXX".length(), game.getVertexBufferObjectManager());
 
         attachChild(fpsText);
 
@@ -197,10 +203,17 @@ public class GameScene extends BaseScene implements ContactListener {
         final Body a = contact.getFixtureA().getBody();
         final Body b = contact.getFixtureB().getBody();
 
+        if ((a.getUserData().equals("goal") && b.getUserData().equals("player")) || (b.getUserData().equals("goal") && a.getUserData().equals("player"))) {
+            if (endTime == 0) {
+                endTime = System.currentTimeMillis();
+                Log.d("Finished", "" + (endTime - startTime));
+            }
+        }
+
         if (a.getUserData().equals("player")) {
             if (b.getUserData().equals("vertical")) {
                 if (a.getPosition().x <= b.getPosition().x) {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -208,7 +221,7 @@ public class GameScene extends BaseScene implements ContactListener {
                         }
                     });
                 } else {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -218,7 +231,7 @@ public class GameScene extends BaseScene implements ContactListener {
                 }
             } else if (b.getUserData().equals("horizontal")) {
                 if (a.getPosition().y <= b.getPosition().y) {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -226,7 +239,7 @@ public class GameScene extends BaseScene implements ContactListener {
                         }
                     });
                 } else {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -240,7 +253,7 @@ public class GameScene extends BaseScene implements ContactListener {
         if (b.getUserData().equals("player")) {
             if (a.getUserData().equals("vertical")) {
                 if (b.getPosition().x <= a.getPosition().x) {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -248,7 +261,7 @@ public class GameScene extends BaseScene implements ContactListener {
                         }
                     });
                 } else {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -258,7 +271,7 @@ public class GameScene extends BaseScene implements ContactListener {
                 }
             } else if (a.getUserData().equals("horizontal")) {
                 if (b.getPosition().y <= a.getPosition().y) {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {
@@ -266,7 +279,7 @@ public class GameScene extends BaseScene implements ContactListener {
                         }
                     });
                 } else {
-                    GameState.getInstance().getGameActivity().runOnUpdateThread(new Runnable() {
+                    ResourcesManager.getInstance().gameActivity.runOnUpdateThread(new Runnable() {
 
                         @Override
                         public void run() {

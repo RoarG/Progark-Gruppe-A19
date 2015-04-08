@@ -20,12 +20,14 @@ public class ResourcesManager {
     public GameActivity gameActivity;
     public Camera camera;
     public VertexBufferObjectManager vertexBufferObjectManager;
-    private SpriteHandler spriteHandler;
-    private FontHandler fontHandler;
+
+    public SpriteHandler spriteHandler;
+    public FontHandler fontHandler;
 
     public void loadMenuResources() {
         loadMenuGraphics();
         loadMenuAudio();
+        loadGameFonts();
     }
 
     public void loadGameResources() {

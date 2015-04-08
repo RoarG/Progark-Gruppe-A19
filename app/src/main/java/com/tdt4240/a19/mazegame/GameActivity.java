@@ -17,7 +17,6 @@ import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.CountdownScene;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
-import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
 import org.andengine.engine.camera.BoundCamera;
@@ -40,8 +39,6 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     private Camera camera;
 
-    private SpriteHandler spriteHandler;
-    private FontHandler fontHandler;
     private ResourcesManager resourcesManager;
 
     /*
@@ -96,7 +93,6 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
         BoundCamera camera = new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         //camera.setBounds(-400, -500, 2000, 800);
         //camera.setBoundsEnabled(true);
-        GameState.getInstance().setGameActivity(this);
         this.camera = camera;
         Log.w(TAG, "onCreateEngineOptions");
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
@@ -104,7 +100,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        /*BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         Log.w(TAG, "onCreateResources");
         spriteHandler = new SpriteHandler();
         spriteHandler.setupAtlases();
@@ -116,7 +112,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
         fontHandler = new FontHandler();
         fontHandler.createFonts();
-        fontHandler.loadFonts();
+        fontHandler.loadFonts();*/
 
         ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
         resourcesManager = ResourcesManager.getInstance();
@@ -171,15 +167,6 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
         //mGoogleApiClient.connect();
 
-    }
-
-
-    public SpriteHandler getSpriteHandler() {
-        return spriteHandler;
-    }
-
-    public FontHandler getFontHandler() {
-        return fontHandler;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tdt4240.a19.mazegame.user;
 
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.maze.Maze;
 import com.tdt4240.a19.mazegame.maze.MazeLayer;
@@ -29,8 +29,7 @@ public class UserLayer extends Entity {
     }
 
     public void init(MazeLayer mazeLayer, PhysicsWorld physicsWorld) {
-        GameState gameState = GameState.getInstance();
-        GameActivity game = gameState.getGameActivity();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         Sprite mazeBackground = mazeLayer.getMazeBackground();
         Maze maze = mazeLayer.getMaze();
@@ -41,7 +40,7 @@ public class UserLayer extends Entity {
         float startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
         float startY = (((RecursiveBacktrackerMaze)maze).getHeight() -1 ) * yBase + 4;
 
-        user = new User(startX, startY, game.getSpriteHandler().getUserSprite(), game.getVertexBufferObjectManager(), physicsWorld) {
+        user = new User(startX, startY, ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), physicsWorld) {
             @Override
             public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
                 super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);

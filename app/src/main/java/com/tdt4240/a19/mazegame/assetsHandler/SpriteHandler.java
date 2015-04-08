@@ -1,8 +1,6 @@
 package com.tdt4240.a19.mazegame.assetsHandler;
 
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
-
 
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -35,7 +33,7 @@ public class SpriteHandler {
     }
 
     public void setupAtlases() {
-        GameActivity game = GameState.getInstance().getGameActivity();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         buttons = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
         backgrounds = new BuildableBitmapTextureAtlas(game.getTextureManager(), 2048, 2048);
@@ -43,7 +41,7 @@ public class SpriteHandler {
     }
 
     public void setupSprites() {
-        GameActivity game = GameState.getInstance().getGameActivity();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");

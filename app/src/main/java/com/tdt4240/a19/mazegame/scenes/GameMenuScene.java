@@ -11,7 +11,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.util.color.Color;
 
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 import com.tdt4240.a19.mazegame.scenes.BaseScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
@@ -25,17 +25,16 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
 
     private void createMenuChildScene()
     {
-        GameActivity game = GameState.getInstance().getGameActivity();
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
-        menuChildScene = new MenuScene(game.getEngine().getCamera());
+        menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
-        final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY,game.getSpriteHandler().getButtonSprite(),game.getVertexBufferObjectManager()),1.2f,1);
-        final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS,game.getSpriteHandler().getButtonSprite(), game.getVertexBufferObjectManager()),1.2f,1);
+        final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
+        final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
 
 
-        Text playText = new Text(45.0f, 5.0f, game.getFontHandler().getBasicFont(), "Play", game.getVertexBufferObjectManager());
+        Text playText = new Text(45.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Play", ResourcesManager.getInstance().vertexBufferObjectManager);
         playMenuItem.attachChild(playText);
-        Text optionsText = new Text(20.0f, 5.0f, game.getFontHandler().getBasicFont(), "Options", game.getVertexBufferObjectManager());
+        Text optionsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Options", ResourcesManager.getInstance().vertexBufferObjectManager);
         optionsMenuItem.attachChild(optionsText);
 
         menuChildScene.addMenuItem(playMenuItem);
@@ -78,6 +77,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_OPTIONS:
+                SceneManager.getInstance().createSettingsScene();
                 return true;
             default:
                 return false;

@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
@@ -70,7 +70,6 @@ public class MazeLayer extends Entity {
 
     public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY, PhysicsWorld world) {
         // BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        GameActivity game = GameState.getInstance().getGameActivity();
         this.mazeX = pMazeX;
         this.mazeY = pMazeY;
         this.centerX = pCenterX;
@@ -88,24 +87,22 @@ public class MazeLayer extends Entity {
          */
          setLayout(3);
 
-        setupBackground(game);
-        setupWalls(game, world);
-        setupStartNGoal(game);
+        setupBackground();
+        setupWalls(world);
+        setupStartNGoal(world);
 
     }
 
     /**
-     * Sets up the background
-     * @param game
+     * Generates and places the background
      */
-    private void setupBackground(GameActivity game){
-        background = new Sprite(0, 0, game.getSpriteHandler().getMazeBackground(backgroundColor), game.getVertexBufferObjectManager());
+    private void setupBackground(){
+        background = new Sprite(0, 0, ResourcesManager.getInstance().spriteHandler.getMazeBackground(backgroundColor), ResourcesManager.getInstance().vertexBufferObjectManager);
         background.setPosition(centerX - background.getWidth()/2, centerY - background.getHeight()/2);
         attachChild(background);
     }
 
-
-    private void setupWalls(GameActivity game, PhysicsWorld physicsWorld){
+    private void setupWalls(PhysicsWorld physicsWorld){
         boolean[] vertWalls = maze.getVertWalls();      // 11x10
         boolean[] horiWalls = maze.getHorizWalls();     // 10x11
 
@@ -116,11 +113,11 @@ public class MazeLayer extends Entity {
         // setup horizontal walls on the top and bottom (frame)
         int x = 0;
         int y = 0;
-        final SpriteBatch horizontalBatch = new SpriteBatch(game.getSpriteHandler().getHoriWall(wallColor, mazeSize).getTexture(), horiWalls.length, game.getVertexBufferObjectManager());
+        final SpriteBatch horizontalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor, mazeSize).getTexture(), horiWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
         horizontalBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         for (boolean bol : horiWalls) {
             if (bol){
-                Sprite wall = new Sprite(x * xBase, y * yBase, game.getSpriteHandler().getHoriWall(wallColor, mazeSize), game.getVertexBufferObjectManager());
+                Sprite wall = new Sprite(x * xBase, y * yBase, ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor, mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
                 horizontalBatch.draw(wall);
                 walls.add(wall);
 
@@ -141,11 +138,11 @@ public class MazeLayer extends Entity {
         x = 0;
         y = 0;
         // game.getSpriteHandler().getVertWall(wallColor, mazeSize).getTexture();
-        final SpriteBatch verticalBatch = new SpriteBatch(game.getSpriteHandler().getVertWall(wallColor, mazeSize).getTexture(), vertWalls.length, game.getVertexBufferObjectManager());
+        final SpriteBatch verticalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor, mazeSize).getTexture(), vertWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
         verticalBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         for (boolean bol : vertWalls) {
             if (bol){
-                Sprite wall = new Sprite(x*xBase, y*yBase, game.getSpriteHandler().getVertWall(wallColor, mazeSize), game.getVertexBufferObjectManager());
+                Sprite wall = new Sprite(x*xBase, y*yBase, ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor, mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
                 verticalBatch.draw(wall);
                 walls.add(wall);
 
@@ -166,9 +163,8 @@ public class MazeLayer extends Entity {
 
     /**
      * Paints the start and goal areas.
-     * @param game
      */
-    public void setupStartNGoal(GameActivity game){
+    public void setupStartNGoal(PhysicsWorld physicsWorld){
         int xBase = (int)background.getWidth()/mazeX;     // should be 300/20 = 15
 
         Random rand = new Random();
@@ -176,8 +172,12 @@ public class MazeLayer extends Entity {
 
         int goalX = ((RecursiveBacktrackerMaze)maze).getEndX();
 
-        start = new Sprite(startX*xBase, background.getHeight()-(background.getHeight()/mazeY), game.getSpriteHandler().getStart(mazeSize), game.getVertexBufferObjectManager());
-        goal = new Sprite(goalX*xBase, 0, game.getSpriteHandler().getGoal(mazeSize), game.getVertexBufferObjectManager());
+        start = new Sprite(startX*xBase, background.getHeight()-(background.getHeight()/mazeY), ResourcesManager.getInstance().spriteHandler.getStart(mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
+        goal = new Sprite(goalX*xBase, 0, ResourcesManager.getInstance().spriteHandler.getGoal(mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
+
+        Body body = PhysicsFactory.createBoxBody(physicsWorld, goal, BodyDef.BodyType.StaticBody, PhysicsFactory.createFixtureDef(0, 0, 0));
+        body.setUserData("goal");
+        wallBodies.add(body);
 
         background.attachChild(start);
         background.attachChild(goal);
