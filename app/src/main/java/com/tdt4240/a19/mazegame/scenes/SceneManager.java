@@ -1,7 +1,6 @@
 package com.tdt4240.a19.mazegame.scenes;
 
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 
 import org.andengine.engine.Engine;
@@ -14,7 +13,8 @@ import org.andengine.ui.IGameInterface;
  * Created by mathi_000 on 25.03.2015.
  */
 public class SceneManager {
-    private WelcomeScene welcomeScene;
+
+    private SettingsScene settingsScene;
     private GameScene gameScene;
     private GameRoomScene gameRoomScene;
     private BaseScene menuScene;
@@ -24,19 +24,20 @@ public class SceneManager {
     private SceneType currentSceneType = SceneType.SCENE_MENUSCENE;
     private BaseScene currentScene;
 
-    private Engine engine = GameState.getInstance().getGameActivity().getEngine();
+    private Engine engine = ResourcesManager.getInstance().engine;
 
     public enum SceneType{
         SCENE_WELCOMESCENE,
         SCENE_GAMESCENE,
         SCENE_GAMEROOMSCENE,
         SCENE_MENUSCENE,
-        SCENE_SPLASHSCENE
+        SCENE_SPLASHSCENE,
+        SCENE_SETTINGSSCENE
     }
 
     public void setScene(BaseScene scene) {
         final BaseScene pScene = scene;
-        GameActivity game = GameState.getInstance().getGameActivity();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
         game.runOnUpdateThread(new Runnable() {
             @Override
             public void run() {
@@ -62,6 +63,9 @@ public class SceneManager {
                 setScene(gameRoomScene);
                 break;
                 */
+            case SCENE_SETTINGSSCENE:
+                setScene(settingsScene);
+                break;
             case SCENE_MENUSCENE:
                 setScene(menuScene);
                 break;
@@ -106,6 +110,13 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
+
+    public void createSettingsScene() {
+        ResourcesManager.getInstance().loadMenuResources();
+        settingsScene = new SettingsScene();
+        setScene(settingsScene);
+    }
+
     public void loadGameScene(final Engine mEngine)
     {
         mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback()

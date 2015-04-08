@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.tdt4240.a19.mazegame.GameActivity;
-import com.tdt4240.a19.mazegame.GameState;
 import com.tdt4240.a19.mazegame.maze.Maze;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;

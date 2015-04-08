@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.plus.Plus;
 
 import com.google.example.games.basegameutils.BaseGameUtils;
@@ -16,7 +17,6 @@ import com.tdt4240.a19.mazegame.assetsHandler.SpriteHandler;
 import com.tdt4240.a19.mazegame.scenes.CountdownScene;
 import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
-import com.tdt4240.a19.mazegame.scenes.WelcomeScene;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
 import org.andengine.engine.camera.BoundCamera;
@@ -30,6 +30,8 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import java.util.ArrayList;
+
 public class GameActivity extends GBaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int CAMERA_WIDTH = 480;
@@ -37,12 +39,10 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     private Camera camera;
 
-    private SpriteHandler spriteHandler;
-    private FontHandler fontHandler;
     private ResourcesManager resourcesManager;
 
     /*
-    API integration
+    API integration Basic
     */
 
     private static final String TAG = "MultiMazed";
@@ -63,12 +63,36 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     // Set to false to require the user to click the button in order to sign in.
     private boolean mAutoStartSignInFlow = false;
 
+    /*
+    API integration MP
+    */
+
+    // Room ID where the currently active game is taking place; null if we're
+    // not playing.
+    String mRoomId = null;
+
+    // Are we playing in multiplayer mode?
+    boolean mMultiplayer = false;
+
+    // The participants in the currently active game
+    ArrayList<Participant> mParticipants = null;
+
+    // My participant ID in the currently active game
+    String mMyId = null;
+
+    // If non-null, this is the id of the invitation we received via the
+    // invitation listener
+    String mIncomingInvitationId = null;
+
+    // Message buffer for sending messages
+    byte[] mMsgBuf = new byte[2];
+
+
     @Override
     public EngineOptions onCreateEngineOptions() {
         BoundCamera camera = new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         //camera.setBounds(-400, -500, 2000, 800);
         //camera.setBoundsEnabled(true);
-        GameState.getInstance().setGameActivity(this);
         this.camera = camera;
         Log.w(TAG, "onCreateEngineOptions");
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
@@ -76,7 +100,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        /*BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         Log.w(TAG, "onCreateResources");
         spriteHandler = new SpriteHandler();
         spriteHandler.setupAtlases();
@@ -88,7 +112,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
         fontHandler = new FontHandler();
         fontHandler.createFonts();
-        fontHandler.loadFonts();
+        fontHandler.loadFonts();*/
 
         ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
         resourcesManager = ResourcesManager.getInstance();
@@ -108,10 +132,12 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
-        /*mGoogleApiClient.connect();*/
+
     }
 
 /*
+
+    // TODO: Se om det er behov for å kalle connect. Står på auto connect atm.
     @Override
     protected void onStart() {
         super.onStart();
@@ -141,15 +167,6 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
         //mGoogleApiClient.connect();
 
-    }
-
-
-    public SpriteHandler getSpriteHandler() {
-        return spriteHandler;
-    }
-
-    public FontHandler getFontHandler() {
-        return fontHandler;
     }
 
     @Override
