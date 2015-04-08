@@ -1,1 +1,1 @@
-include ':app', ':andengine', ':andenginephysicsbox2dextension', ':BaseGameUtils'
+include  ':andengine' ':andenginephysicsbox2dextension'':BaseGameUtils'':app'
