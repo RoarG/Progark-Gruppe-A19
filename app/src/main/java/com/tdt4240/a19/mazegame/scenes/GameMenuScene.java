@@ -21,7 +21,8 @@ import com.tdt4240.a19.mazegame.scenes.SceneManager;
 public class GameMenuScene  extends BaseScene implements org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener{
     private MenuScene menuChildScene;
     private final int MENU_PLAY = 0;
-    private final int MENU_OPTIONS = 1;
+    private final int MENU_MULTIPLAYER = 1;
+    private final int MENU_OPTIONS = 2;
 
     private void createMenuChildScene()
     {
@@ -29,21 +30,26 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
         final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
+        final IMenuItem multiplayerMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER,ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
 
 
         Text playText = new Text(45.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Play", ResourcesManager.getInstance().vertexBufferObjectManager);
         playMenuItem.attachChild(playText);
+        Text multiplayerText = new Text(5.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"Multiplayer",ResourcesManager.getInstance().vertexBufferObjectManager);
+        multiplayerMenuItem.attachChild(multiplayerText);
         Text optionsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Options", ResourcesManager.getInstance().vertexBufferObjectManager);
         optionsMenuItem.attachChild(optionsText);
 
         menuChildScene.addMenuItem(playMenuItem);
+        menuChildScene.addMenuItem(multiplayerMenuItem);
         menuChildScene.addMenuItem(optionsMenuItem);
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY()+10);
-        optionsMenuItem.setPosition(optionsMenuItem.getX(),optionsMenuItem.getY()-110);
+        playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY()-60);
+        multiplayerMenuItem.setPosition(multiplayerMenuItem.getX(),multiplayerMenuItem.getY()+0);
+        optionsMenuItem.setPosition(optionsMenuItem.getX(),optionsMenuItem.getY()+60);
 
         menuChildScene.setOnMenuItemClickListener(this);
 
@@ -77,7 +83,10 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_OPTIONS:
-                SceneManager.getInstance().createSettingsScene();
+                SceneManager.getInstance().loadSettingScene(engine);
+                return true;
+            case MENU_MULTIPLAYER:
+               // SceneManager.getInstance().loadGameRoomScene(engine);
                 return true;
             default:
                 return false;

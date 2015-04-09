@@ -130,6 +130,18 @@ public class SceneManager {
             }
         }));
     }
+    public void loadSettingScene(final Engine mEngine){
+        mEngine.registerUpdateHandler(new TimerHandler(0.1f,new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                ResourcesManager.getInstance().loadGameResources();
+                settingsScene = new SettingsScene();
+                setScene(settingsScene);
+            }
+        }));
+    }
 
     public GameScene getGameScene(){ return gameScene; }
 
