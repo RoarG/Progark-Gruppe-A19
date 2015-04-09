@@ -110,6 +110,9 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
+    public void loadMenuScene(){
+        setScene(menuScene);
+    }
 
     public void createSettingsScene() {
         ResourcesManager.getInstance().loadMenuResources();
