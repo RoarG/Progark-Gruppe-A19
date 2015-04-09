@@ -113,7 +113,7 @@ public class GameScene extends BaseScene implements ContactListener {
     }
 
     private void setupTimer() {
-        final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.0", "00:00.0".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
+        final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.000", "000:000.0000".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
         attachChild(timerText);
         registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
             @Override
@@ -143,9 +143,9 @@ public class GameScene extends BaseScene implements ContactListener {
                 float deltaX = (pSceneTouchEvent.getX() - pressed.x) / deltaMS;
                 float deltaY = (pSceneTouchEvent.getY() - pressed.y) / deltaMS;
                 if (Math.abs(deltaX) > Math.abs(deltaY))
-                    user.getBody().setLinearVelocity(new Vector2(deltaX * 10, 0));
+                    user.getBody().setLinearVelocity(new Vector2(deltaX * 2, 0));
                 else
-                    user.getBody().setLinearVelocity(new Vector2(0, deltaY * 10));
+                    user.getBody().setLinearVelocity(new Vector2(0, deltaY * 2));
                 break;
             case TouchEvent.ACTION_MOVE:
                 //userLayer.getUser().setPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
