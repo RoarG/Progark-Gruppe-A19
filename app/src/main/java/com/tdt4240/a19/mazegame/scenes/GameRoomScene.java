@@ -26,7 +26,7 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
     private final int MENU_LEAVE = 1;
 
     private void createMenuChildScene() {
-        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+        setBackground(new Background(new Color(0.31f, 0.61f, 0.40f)));
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
         final IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f, 1);
