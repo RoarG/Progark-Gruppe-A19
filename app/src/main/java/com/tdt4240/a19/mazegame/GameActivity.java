@@ -2,6 +2,7 @@ package com.tdt4240.a19.mazegame;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -231,4 +232,17 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     public void onSignInSucceeded() {
 
     }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        System.exit(0);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            SceneManager.getInstance().getCurrentScene().onBackKeyPressed();
+        }
+        return false;
+    }
 }
+

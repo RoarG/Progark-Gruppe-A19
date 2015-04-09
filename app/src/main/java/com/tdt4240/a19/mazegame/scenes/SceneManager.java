@@ -110,6 +110,9 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
+    public void loadMenuScene(){
+        setScene(menuScene);
+    }
 
     public void createSettingsScene() {
         ResourcesManager.getInstance().loadMenuResources();
@@ -127,6 +130,18 @@ public class SceneManager {
                 ResourcesManager.getInstance().loadGameResources();
                 gameScene = new GameScene();
                 setScene(gameScene);
+            }
+        }));
+    }
+    public void loadSettingScene(final Engine mEngine){
+        mEngine.registerUpdateHandler(new TimerHandler(0.1f,new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                ResourcesManager.getInstance().loadGameResources();
+                settingsScene = new SettingsScene();
+                setScene(settingsScene);
             }
         }));
     }
