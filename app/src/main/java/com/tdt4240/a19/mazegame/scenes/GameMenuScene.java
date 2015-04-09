@@ -23,6 +23,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
     private final int MENU_PLAY = 0;
     private final int MENU_MULTIPLAYER = 1;
     private final int MENU_OPTIONS = 2;
+    private GameActivity game;
 
     private void createMenuChildScene()
     {
@@ -33,6 +34,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         final IMenuItem multiplayerMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER,ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
 
+        game = ResourcesManager.getInstance().gameActivity;
 
         Text playText = new Text(45.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Play", ResourcesManager.getInstance().vertexBufferObjectManager);
         playMenuItem.attachChild(playText);
@@ -87,6 +89,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 return true;
             case MENU_MULTIPLAYER:
                // SceneManager.getInstance().loadGameRoomScene(engine);
+                game.startQuickGame();
                 return true;
             default:
                 return false;

@@ -36,6 +36,7 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.ui.IGameInterface;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     // Set to true to automatically start the sign in flow when the Activity starts.
     // Set to false to require the user to click the button in order to sign in.
-    private boolean mAutoStartSignInFlow = false;
+    private boolean mAutoStartSignInFlow = true;
 
     /*
     API integration MP
@@ -151,19 +152,22 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
 
+    mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
+
     }
 
 /*
 
     // TODO: Se om det er behov for å kalle connect. Står på auto connect atm.
-    @Override
-    protected void onStart() {
-        super.onStart();
-     */
-/*   mGoogleApiClient.connect();*//*
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//    }
 
-    }
-*/
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
@@ -209,6 +213,11 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
         // TODO: switchToMainScreen
         /*switchToMainScreen();*/
+
+ //   }
+
+    @Override
+    public void onConnected(Bundle bundle) {
 
     }
 
@@ -261,7 +270,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     }
 
     // TODO: Legg til knapp for denne funksjonen
-    void startQuickGame() {
+    public void startQuickGame() {
         // quick-start a game with 1 randomly selected opponent
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 10;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
@@ -271,7 +280,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         // TODO: Add loading screen while waiting
-        keepScreenOn();
+        //keepScreenOn();
         resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
 
@@ -499,6 +508,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     // game will be
     // cancelled.
     void keepScreenOn() {
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
