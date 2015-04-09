@@ -43,6 +43,7 @@ public class GameScene extends BaseScene implements ContactListener {
     private MazeLayer mazeLayer;
 
     private Vector2 pressed = new Vector2();
+    private long pressedTime;
 
     private long endTime = 0;
     private long startTime;
@@ -51,11 +52,6 @@ public class GameScene extends BaseScene implements ContactListener {
      * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
      */
     private int mazeSize;
-
-    public GameScene() {
-
-
-    }
 
     @Override
     public void createScene() {
@@ -77,9 +73,12 @@ public class GameScene extends BaseScene implements ContactListener {
         attachChild(mazeLayer);
         attachChild(userLayer);
 
-        setupFPSCounter(game);
+        //setupFPSCounter(game);
 
         startTime = System.currentTimeMillis();
+        endTime = 0;
+
+        setupTimer();
     }
 
     @Override
@@ -89,38 +88,13 @@ public class GameScene extends BaseScene implements ContactListener {
 
     @Override
     public SceneManager.SceneType getSceneType() {
-        return null;
+        return SceneManager.SceneType.SCENE_GAMESCENE;
     }
 
     @Override
     public void disposeScene() {
 
     }
-
-    public void init() {
-        /**
-        GameActivity game = GameState.getInstance().getGameActivity();
-
-        physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
-        registerUpdateHandler(physicsWorld);
-
-        setMazeSize("small");
-
-        physicsWorld.setContactListener(this);
-
-
-        mazeLayer.init(game.CAMERA_WIDTH/2, game.CAMERA_HEIGHT/2, 10*mazeSize, 15*mazeSize);  // pCenterX, pCenterY, mazeX, mazeY
-        userLayer.init();
-
-        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
-
-        attachChild(mazeLayer);
-        attachChild(userLayer);
-
-        setupFPSCounter(game);
-         **/
-    }
-
 
     private void setupFPSCounter(GameActivity game) {
         final FPSCounter fpsCounter = new FPSCounter();
@@ -138,6 +112,23 @@ public class GameScene extends BaseScene implements ContactListener {
         }));
     }
 
+    private void setupTimer() {
+        final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.0", "00:00.0".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
+        attachChild(timerText);
+        registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(final TimerHandler pTimerHandler) {
+                long ms = System.currentTimeMillis() - startTime;
+                long sec = ms / 1000;
+                long min = sec / 60;
+                ms = ms % 1000;
+                sec = sec % 60;
+                min = min % 60;
+                timerText.setText(min + ":" + sec + "." + ms);
+            }
+        }));
+    }
+
     @Override
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
         User user = (User)userLayer.getUser();
@@ -145,14 +136,16 @@ public class GameScene extends BaseScene implements ContactListener {
         switch (pSceneTouchEvent.getAction()) {
             case TouchEvent.ACTION_DOWN:
                 pressed = new Vector2(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+                pressedTime = System.currentTimeMillis();
                 break;
             case TouchEvent.ACTION_UP:
-                float deltaX = pSceneTouchEvent.getX() - pressed.x;
-                float deltaY = pSceneTouchEvent.getY() - pressed.y;
+                long deltaMS = System.currentTimeMillis() - pressedTime;
+                float deltaX = (pSceneTouchEvent.getX() - pressed.x) / deltaMS;
+                float deltaY = (pSceneTouchEvent.getY() - pressed.y) / deltaMS;
                 if (Math.abs(deltaX) > Math.abs(deltaY))
-                    user.getBody().setLinearVelocity(new Vector2(deltaX / 100, 0));
+                    user.getBody().setLinearVelocity(new Vector2(deltaX * 10, 0));
                 else
-                    user.getBody().setLinearVelocity(new Vector2(0, deltaY / 100));
+                    user.getBody().setLinearVelocity(new Vector2(0, deltaY * 10));
                 break;
             case TouchEvent.ACTION_MOVE:
                 //userLayer.getUser().setPosition(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
