@@ -2,12 +2,15 @@ package com.tdt4240.a19.mazegame.assetsHandler;
 
 import com.tdt4240.a19.mazegame.GameActivity;
 
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder;
+import org.andengine.opengl.texture.bitmap.BitmapTexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
 /**
@@ -18,6 +21,8 @@ public class SpriteHandler {
     private BuildableBitmapTextureAtlas buttons;
     private BuildableBitmapTextureAtlas backgrounds;
     private BuildableBitmapTextureAtlas sprites;
+    private BuildableBitmapTextureAtlas popup;
+    private BuildableBitmapTextureAtlas logos;
 
     private ITextureRegion play_button;
     private ITextureRegion user;
@@ -27,7 +32,8 @@ public class SpriteHandler {
     private ITextureRegion rhw10x15, rvw10x15, rhw20x30, rvw20x30, rhw30x45, rvw30x45;
     private ITextureRegion thw10x15, tvw10x15, thw20x30, tvw20x30, thw30x45, tvw30x45;
     private ITextureRegion start10x15, goal10x15, start20x30, goal20x30, start30x45, goal30x45;
-
+    private ITextureRegion popupBackground;
+    private ITextureRegion logoIcon;
     public SpriteHandler() {
 
     }
@@ -38,6 +44,8 @@ public class SpriteHandler {
         buttons = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
         backgrounds = new BuildableBitmapTextureAtlas(game.getTextureManager(), 2048, 2048);
         sprites = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
+        popup = new BuildableBitmapTextureAtlas(game.getTextureManager(), 400,400);
+        logos = new BuildableBitmapTextureAtlas(game.getTextureManager(),1024,1024);
     }
 
     public void setupSprites() {
@@ -46,6 +54,10 @@ public class SpriteHandler {
         play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
 
+        // Logos
+        logoIcon = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons,game,"logo256.png");
+        // PopupBackground
+        popupBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(popup,game,"PopupBackground.png");
         // Backgrounds
         blackBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "BlackBackground.png");
         whiteBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "WhiteBackground.png");
@@ -120,6 +132,8 @@ public class SpriteHandler {
             buttons.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,1,0));
             backgrounds.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
             sprites.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+            popup.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,0,1));
+            logos.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,0,1));
         } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
             e.printStackTrace();
         }
@@ -129,6 +143,8 @@ public class SpriteHandler {
         this.buttons.load();
         this.backgrounds.load();
         this.sprites.load();
+        this.popup.load();
+        this.logos.load();
     }
 
     public ITextureRegion getButtonSprite() {
@@ -139,6 +155,8 @@ public class SpriteHandler {
         return user;
     }
 
+    public ITextureRegion getPopupBackground(){ return popupBackground; }
+    public ITextureRegion getLogoIcon(){ return logoIcon; }
     public  ITextureRegion getGoal(int mazeSize) {
         if (mazeSize == 1){
             return goal10x15;

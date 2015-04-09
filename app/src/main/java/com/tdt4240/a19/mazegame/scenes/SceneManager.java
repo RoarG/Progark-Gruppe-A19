@@ -19,8 +19,8 @@ public class SceneManager {
     private GameRoomScene gameRoomScene;
     private BaseScene menuScene;
     private BaseScene splashScene;
+    private BaseScene popupScene;
     private BaseScene victoryScene;
-
     private static final SceneManager INSTANCE = new SceneManager();
     private SceneType currentSceneType = SceneType.SCENE_MENUSCENE;
     private BaseScene currentScene;
@@ -34,7 +34,8 @@ public class SceneManager {
         SCENE_MENUSCENE,
         SCENE_SPLASHSCENE,
         SCENE_SETTINGSSCENE,
-        SCENE_VICTORYSCENE
+        SCENE_VICTORYSCENE,
+        SCENE_POPUPSCENE
     }
 
     public void setScene(BaseScene scene) {
@@ -60,10 +61,9 @@ public class SceneManager {
             case SCENE_GAMESCENE:
                 setScene(gameScene);
                 break;
-
             case SCENE_GAMEROOMSCENE:
                 setScene(gameRoomScene);
-                break;
+                break;                
             case SCENE_SETTINGSSCENE:
                 setScene(settingsScene);
                 break;
@@ -72,6 +72,9 @@ public class SceneManager {
                 break;
             case SCENE_SPLASHSCENE:
                 setScene(splashScene);
+                break;
+            case SCENE_POPUPSCENE:
+                setScene(popupScene);
                 break;
             case SCENE_VICTORYSCENE:
                 setScene(victoryScene);
@@ -114,6 +117,15 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
+    public void loadPopupScene(){
+        ResourcesManager.getInstance().loadGameResources();
+      //  popupScene = new PopupScene();
+        setScene(popupScene);
+    }
+    public void disposePopupScene(){
+        setScene(gameScene);
+    }
+
     public void loadMenuScene() {
         setScene(menuScene);
     }
@@ -152,6 +164,17 @@ public class SceneManager {
                 ResourcesManager.getInstance().loadGameResources();
                 settingsScene = new SettingsScene();
                 setScene(settingsScene);
+            }
+        }));
+    }
+    public void createGameRoomScene(final Engine mEngine){
+        mEngine.registerUpdateHandler(new TimerHandler(0.1f,new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                ResourcesManager.getInstance().loadGameResources();
+                gameRoomScene = new GameRoomScene();
+                setScene(gameRoomScene);
             }
         }));
     }

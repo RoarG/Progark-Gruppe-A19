@@ -83,7 +83,7 @@ public class GameScene extends BaseScene implements ContactListener {
 
     @Override
     public void onBackKeyPressed() {
-
+        SceneManager.getInstance().createVictoryScene();
     }
 
     @Override
