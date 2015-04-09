@@ -110,7 +110,7 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
-    public void loadMenuScene(){
+    public void loadMenuScene() {
         setScene(menuScene);
     }
 
