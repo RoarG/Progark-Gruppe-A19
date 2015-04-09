@@ -200,6 +200,7 @@ public class GameScene extends BaseScene implements ContactListener {
             if (endTime == 0) {
                 endTime = System.currentTimeMillis();
                 Log.d("Finished", "" + (endTime - startTime));
+                SceneManager.getInstance().createVictoryScene();
             }
         }
 

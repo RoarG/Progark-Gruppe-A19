@@ -35,9 +35,9 @@ public class SettingsScene extends BaseScene implements org.andengine.entity.sce
         final IMenuItem backMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f,1);
 
 
-        Text soundsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Toggle Sounds", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text soundsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Sounds", ResourcesManager.getInstance().vertexBufferObjectManager);
         soundsMenuItem.attachChild(soundsText);
-        Text musicText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Toggle Music", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text musicText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Music", ResourcesManager.getInstance().vertexBufferObjectManager);
         musicMenuItem.attachChild(musicText);
         Text backText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Back", ResourcesManager.getInstance().vertexBufferObjectManager);
         backMenuItem.attachChild(backText);

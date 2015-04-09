@@ -19,6 +19,7 @@ public class SceneManager {
     private GameRoomScene gameRoomScene;
     private BaseScene menuScene;
     private BaseScene splashScene;
+    private BaseScene victoryScene;
 
     private static final SceneManager INSTANCE = new SceneManager();
     private SceneType currentSceneType = SceneType.SCENE_MENUSCENE;
@@ -32,7 +33,8 @@ public class SceneManager {
         SCENE_GAMEROOMSCENE,
         SCENE_MENUSCENE,
         SCENE_SPLASHSCENE,
-        SCENE_SETTINGSSCENE
+        SCENE_SETTINGSSCENE,
+        SCENE_VICTORYSCENE
     }
 
     public void setScene(BaseScene scene) {
@@ -59,10 +61,9 @@ public class SceneManager {
                 setScene(gameScene);
                 break;
 
-            /*case SCENE_GAMEROOMSCENE:
+            case SCENE_GAMEROOMSCENE:
                 setScene(gameRoomScene);
                 break;
-                */
             case SCENE_SETTINGSSCENE:
                 setScene(settingsScene);
                 break;
@@ -71,6 +72,9 @@ public class SceneManager {
                 break;
             case SCENE_SPLASHSCENE:
                 setScene(splashScene);
+                break;
+            case SCENE_VICTORYSCENE:
+                setScene(victoryScene);
                 break;
             default:
                 break;
@@ -112,6 +116,12 @@ public class SceneManager {
     }
     public void loadMenuScene() {
         setScene(menuScene);
+    }
+
+    public void createVictoryScene() {
+        ResourcesManager.getInstance().loadMenuResources();
+        victoryScene = new VictoryScene();
+        setScene(victoryScene);
     }
 
     public void createSettingsScene() {

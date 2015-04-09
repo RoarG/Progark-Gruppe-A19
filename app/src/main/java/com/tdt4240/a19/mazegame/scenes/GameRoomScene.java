@@ -32,9 +32,9 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
         final IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f, 1);
         final IMenuItem leaveMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LEAVE, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f, 1);
 
-        Text startText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Start Game", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text startText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Start", ResourcesManager.getInstance().vertexBufferObjectManager);
         startMenuItem.attachChild(startText);
-        Text leaveText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Leave Gameroom", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text leaveText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Exit", ResourcesManager.getInstance().vertexBufferObjectManager);
         leaveMenuItem.attachChild(leaveText);
 
         menuChildScene.addMenuItem(startMenuItem);
