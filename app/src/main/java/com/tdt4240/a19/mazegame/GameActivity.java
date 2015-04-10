@@ -1,5 +1,6 @@
 package com.tdt4240.a19.mazegame;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -7,6 +8,8 @@ import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
@@ -46,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GameActivity extends GBaseGameActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener {
+public class GameActivity extends GBaseGameActivity implements ConnectionCallbacks, OnConnectionFailedListener, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener {
 
     public static final int CAMERA_WIDTH = 480;
     public static final int CAMERA_HEIGHT = 800;
@@ -136,6 +139,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
         ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
         resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -152,14 +156,16 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
 
-    //mGoogleApiClient.connect();
+
     }
 
     // TODO: Se om det er behov for å kalle connect. Står på auto connect atm.
     @Override
     protected void onStart() {
-       // mGoogleApiClient.connect();
         super.onStart();
+//        if (!mResolvingError) {  // more about this later
+//            mGoogleApiClient.connect();
+//        }
     }
 
 
@@ -258,9 +264,15 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
         }
         return false;
     }
+    public void invitePlayer() {
+        Log.d(TAG, "Inviteplayer()called.");
+        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 3);
+        startActivityForResult(intent, RC_SELECT_PLAYERS);
+    }
 
     // TODO: Legg til knapp for denne funksjonen
     public void startQuickGame() {
+        Log.d(TAG, "StartQuickGame()called.");
         // quick-start a game with 1 randomly selected opponent
         final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 10;
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,

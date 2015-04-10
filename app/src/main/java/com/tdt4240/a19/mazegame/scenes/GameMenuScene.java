@@ -97,7 +97,8 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 return true;
             case MENU_MULTIPLAYER:
                // SceneManager.getInstance().loadGameRoomScene(engine);
-                game.startQuickGame();
+               // game.startQuickGame();
+                game.invitePlayer();
                 return true;
             default:
                 return false;
