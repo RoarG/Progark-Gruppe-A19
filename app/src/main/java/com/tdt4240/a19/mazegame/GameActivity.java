@@ -1,9 +1,11 @@
 package com.tdt4240.a19.mazegame;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -11,6 +13,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
@@ -270,6 +275,167 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int responseCode,
+                                 Intent intent) {
+        super.onActivityResult(requestCode, responseCode, intent);
+
+        switch (requestCode) {
+            case RC_SELECT_PLAYERS:
+                // we got the result from the "select players" UI -- ready to create the room
+                handleSelectPlayersResult(responseCode, intent);
+                break;
+            case RC_INVITATION_INBOX:
+                // we got the result from the "select invitation" UI (invitation inbox). We're
+                // ready to accept the selected invitation:
+                handleInvitationInboxResult(responseCode, intent);
+                break;
+            case RC_WAITING_ROOM:
+                // we got the result from the "waiting room" UI.
+                if (responseCode == Activity.RESULT_OK) {
+                    // ready to start playing
+                    Log.d(TAG, "Starting game (waiting room returned OK).");
+                    startGame(true);
+                } else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
+                    // player indicated that they want to leave the room
+                    leaveRoom();
+                } else if (responseCode == Activity.RESULT_CANCELED) {
+                    // Dialog was cancelled (user pressed back key, for instance). In our game,
+                    // this means leaving the room too. In more elaborate games, this could mean
+                    // something else (like minimizing the waiting room UI).
+                    leaveRoom();
+                }
+                break;
+            case RC_SIGN_IN:
+                Log.d(TAG, "onActivityResult with requestCode == RC_SIGN_IN, responseCode="
+                        + responseCode + ", intent=" + intent);
+                mSignInClicked = false;
+                mResolvingConnectionFailure = false;
+                if (responseCode == RESULT_OK) {
+                    mGoogleApiClient.connect();
+                } else {
+                    BaseGameUtils.showActivityResultError(this,requestCode,responseCode, R.string.signin_other_error);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, responseCode, intent);
+    }
+
+    // Handle the result of the "Select players UI" we launched when the user clicked the
+    // "Invite friends" button. We react by creating a room with those players.
+    private void handleSelectPlayersResult(int response, Intent data) {
+        if (response != Activity.RESULT_OK) {
+            Log.w(TAG, "*** select players UI cancelled, " + response);
+            // TODO: Switch to main screen
+            //switchToMainScreen();
+            return;
+        }
+
+        Log.d(TAG, "Select players UI succeeded.");
+
+        // get the invitee list
+        final ArrayList<String> invitees = data.getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
+        Log.d(TAG, "Invitee count: " + invitees.size());
+
+        // get the automatch criteria
+        Bundle autoMatchCriteria = null;
+        int minAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MIN_AUTOMATCH_PLAYERS, 0);
+        int maxAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MAX_AUTOMATCH_PLAYERS, 0);
+        if (minAutoMatchPlayers > 0 || maxAutoMatchPlayers > 0) {
+            autoMatchCriteria = RoomConfig.createAutoMatchCriteria(
+                    minAutoMatchPlayers, maxAutoMatchPlayers, 0);
+            Log.d(TAG, "Automatch criteria: " + autoMatchCriteria);
+        }
+
+        // create the room
+        Log.d(TAG, "Creating room...");
+        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
+        rtmConfigBuilder.addPlayersToInvite(invitees);
+        rtmConfigBuilder.setMessageReceivedListener(this);
+        rtmConfigBuilder.setRoomStatusUpdateListener(this);
+        if (autoMatchCriteria != null) {
+            rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        }
+        // TODO: Sett loadingscreen
+        //switchToScreen(R.id.screen_wait);
+        keepScreenOn();
+        resetGameVars();
+        Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
+        Log.d(TAG, "Room created, waiting for it to be ready...");
+    }
+
+    // Handle the result of the invitation inbox UI, where the player can pick an invitation
+    // to accept. We react by accepting the selected invitation, if any.
+    private void handleInvitationInboxResult(int response, Intent data) {
+        if (response != Activity.RESULT_OK) {
+            Log.w(TAG, "*** invitation inbox UI cancelled, " + response);
+            // TODO: Gå til mainscreen
+            //switchToMainScreen();
+            return;
+        }
+
+        Log.d(TAG, "Invitation inbox UI succeeded.");
+        Invitation inv = data.getExtras().getParcelable(Multiplayer.EXTRA_INVITATION);
+
+        // accept invitation
+        acceptInviteToRoom(inv.getInvitationId());
+    }
+
+    // Accept the given invitation.
+    void acceptInviteToRoom(String invId) {
+        // accept the invitation
+        Log.d(TAG, "Accepting invitation: " + invId);
+        RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(this);
+        roomConfigBuilder.setInvitationIdToAccept(invId)
+                .setMessageReceivedListener(this)
+                .setRoomStatusUpdateListener(this);
+        // TODO: Loading screen
+        //switchToScreen(R.id.screen_wait);
+        keepScreenOn();
+        resetGameVars();
+        Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
+    }
+
+    // Start the gameplay phase of the game.
+    void startGame(boolean multiplayer) {
+        mMultiplayer = multiplayer;
+        // TODO: Sett tid update score
+        //updateScoreDisplay();
+        broadcastScore(false);
+        // TODO: Sett game screen
+        //switchToScreen(R.id.screen_game);
+
+        // TODO: Slett dette
+//        findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
+//
+//        // run the gameTick() method every second to update the game.
+//        final Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mSecondsLeft <= 0)
+//                    return;
+//                gameTick();
+//                h.postDelayed(this, 1000);
+//            }
+//        }, 1000);
+    }
+
+    // Leave the room.
+    void leaveRoom() {
+        Log.d(TAG, "Leaving room.");
+        mSecondsLeft = 0;
+        stopKeepingScreenOn();
+        if (mRoomId != null) {
+            Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
+            mRoomId = null;
+            // TODO: Laoding wait screen
+           // switchToScreen(R.id.screen_wait);
+        } else {
+            // TODO: Sett main screen
+            //switchToMainScreen();
+        }
+    }
     // TODO: Legg til knapp for denne funksjonen
     public void startQuickGame() {
         Log.d(TAG, "StartQuickGame()called.");
