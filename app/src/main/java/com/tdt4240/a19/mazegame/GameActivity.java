@@ -397,30 +397,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
     }
 
-    // Start the gameplay phase of the game.
-    void startGame(boolean multiplayer) {
-        mMultiplayer = multiplayer;
-        // TODO: Sett tid update score
-        //updateScoreDisplay();
-        broadcastScore(false);
-        // TODO: Sett game screen
-        //switchToScreen(R.id.screen_game);
 
-        // TODO: Slett dette
-//        findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
-//
-//        // run the gameTick() method every second to update the game.
-//        final Handler h = new Handler();
-//        h.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (mSecondsLeft <= 0)
-//                    return;
-//                gameTick();
-//                h.postDelayed(this, 1000);
-//            }
-//        }, 1000);
-    }
 
     // Leave the room.
     void leaveRoom() {
@@ -451,6 +428,28 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         startActivityForResult(i, RC_WAITING_ROOM);
     }
 
+    // Called when we get an invitation to play a game. We react by showing that to the user.
+    @Override
+    public void onInvitationReceived(Invitation invitation) {
+        // We got an invitation to play a game! So, store it in
+        // mIncomingInvitationId
+        // and show the popup on the screen.
+        // TODO: Kan vise noe i UI
+//        mIncomingInvitationId = invitation.getInvitationId();
+//        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
+//                invitation.getInviter().getDisplayName() + " " +
+//                        getString(R.string.is_inviting_you));
+//        switchToScreen(mCurScreen); // This will show the invitation popup
+    }
+
+    @Override
+    public void onInvitationRemoved(String invitationId) {
+        if (mIncomingInvitationId.equals(invitationId)) {
+            mIncomingInvitationId = null;
+           // TODO: Hide the inv
+           // switchToScreen(mCurScreen); // This will hide the invitation popup
+        }
+    }
 
     // TODO: Legg til knapp for denne funksjonen
     public void startQuickGame() {
@@ -475,16 +474,53 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     // Current state of the game:
     int mSecondsLeft = -1; // how long until the game ends (seconds)
-    final static int GAME_DURATION = 20; // game duration, seconds.
+    final static int GAME_DURATION = 90; // game duration, seconds.
     int mScore = 0; // user's current score
 
     // Reset game variables in preparation for a new game.
     void resetGameVars() {
         mSecondsLeft = GAME_DURATION;
         mScore = 0;
-        // TODO: Implement: finn hva man må importere
-//        mParticipantScore.clear();
-//        mFinishedParticipants.clear();
+        mParticipantScore.clear();
+        mFinishedParticipants.clear();
+    }
+
+    // Start the gameplay phase of the game.
+    void startGame(boolean multiplayer) {
+        mMultiplayer = multiplayer;
+        // TODO: Sett tid update score
+        //updateScoreDisplay();
+        broadcastScore(false);
+        // TODO: Sett game screen
+        //switchToScreen(R.id.screen_game);
+
+        // TODO: Slett dette
+//        findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
+//
+//        // run the gameTick() method every second to update the game.
+//        final Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mSecondsLeft <= 0)
+//                    return;
+//                gameTick();
+//                h.postDelayed(this, 1000);
+//            }
+//        }, 1000);
+    }
+
+    // indicates the player scored one point
+    void scoreOnePoint() {
+        if (mSecondsLeft <= 0)
+            return; // too late!
+        ++mScore;
+        // TODO: update view
+        //updateScoreDisplay();
+        //updatePeerScoresDisplay();
+
+        // broadcast our new score to our peers
+        broadcastScore(false);
     }
 
     // TODO: Trenger vi denne til å holde views?
@@ -537,69 +573,118 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         showWaitingRoom(room);
     }
 
+    // Called when we are connected to the room. We're not ready to play yet! (maybe not everybody
+    // is connected yet).
     @Override
-    public void onJoinedRoom(int i, Room room) {
+    public void onConnectedToRoom(Room room) {
+        Log.d(TAG, "onConnectedToRoom.");
 
+        // get room ID, participants and my ID:
+        mRoomId = room.getRoomId();
+        mParticipants = room.getParticipants();
+        mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mGoogleApiClient));
+
+        // print out the list of participants (for debug purposes)
+        Log.d(TAG, "Room ID: " + mRoomId);
+        Log.d(TAG, "My ID " + mMyId);
+        Log.d(TAG, "<< CONNECTED TO ROOM>>");
     }
 
+    // Called when we get disconnected from the room. We return to the main screen.
     @Override
-    public void onLeftRoom(int i, String s) {
-
+    public void onDisconnectedFromRoom(Room room) {
+        mRoomId = null;
+        showGameError();
     }
 
+    // Called when room is fully connected.
     @Override
-    public void onRoomConnected(int i, Room room) {
+    public void onRoomConnected(int statusCode, Room room) {
+        Log.d(TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+        updateRoom(room);
+    }
 
+    void updateRoom(Room room) {
+        if (room != null) {
+            mParticipants = room.getParticipants();
+        }
+        if (mParticipants != null) {
+            // TODO: Update score main screen
+            //updatePeerScoresDisplay();
+        }
+    }
+
+
+    @Override
+    public void onJoinedRoom(int statusCode, Room room) {
+        Log.d(TAG, "onJoinedRoom(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            showGameError();
+            return;
+        }
+
+        // show the waiting room UI
+        showWaitingRoom(room);
+    }
+
+    // Called when we've successfully left the room (this happens a result of voluntarily leaving
+    // via a call to leaveRoom(). If we get disconnected, we get onDisconnectedFromRoom()).
+    @Override
+    public void onLeftRoom(int statusCode, String roomId) {
+        // we have left the room; return to main screen.
+        Log.d(TAG, "onLeftRoom, code " + statusCode);
+        // TODO: Mainscreen
+        //switchToMainScreen();
+    }
+
+
+    // We treat most of the room update callbacks in the same way: we update our list of
+    // participants and update the display. In a real game we would also have to check if that
+    // change requires some action like removing the corresponding player avatar from the screen,
+    // etc.
+    @Override
+    public void onRoomAutoMatching(Room room) {
+        updateRoom(room);
     }
 
     @Override
     public void onRoomConnecting(Room room) {
+        updateRoom(room);
+    }
 
+
+    @Override
+    public void onPeerInvitedToRoom(Room room, List<String> arg1) {
+        updateRoom(room);
+    }
+
+    public void onPeerDeclined(Room room, List<String> arg1) {
+        updateRoom(room);
     }
 
     @Override
-    public void onRoomAutoMatching(Room room) {
+    public void onPeerJoined(Room room, List<String> arg1) {
+        updateRoom(room);
+    }
 
+    public void onPeerLeft(Room room, List<String> peersWhoLeft) {
+        updateRoom(room);
     }
 
     @Override
-    public void onPeerInvitedToRoom(Room room, List<String> strings) {
-
+    public void onPeersConnected(Room room, List<String> peers) {
+        updateRoom(room);
     }
 
     @Override
-    public void onPeerDeclined(Room room, List<String> strings) {
-
-    }
-
-    @Override
-    public void onPeerJoined(Room room, List<String> strings) {
-
-    }
-
-    @Override
-    public void onPeerLeft(Room room, List<String> strings) {
-
-    }
-
-    @Override
-    public void onConnectedToRoom(Room room) {
-
-    }
-
-    @Override
-    public void onDisconnectedFromRoom(Room room) {
-
-    }
-
-    @Override
-    public void onPeersConnected(Room room, List<String> strings) {
-
-    }
-
-    @Override
-    public void onPeersDisconnected(Room room, List<String> strings) {
-
+    public void onPeersDisconnected(Room room, List<String> peers) {
+        updateRoom(room);
     }
 
     @Override
@@ -611,6 +696,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void onP2PDisconnected(String s) {
 
     }
+
+
      /*
      * COMMUNICATIONS SECTION. Methods that implement the game's network
      * protocol.
@@ -699,7 +786,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
      * MISC SECTION. Miscellaneous methods.
      */
 
-
+// TODO: Inv popup?
     // Sets the flag to keep this screen on. It's recommended to do that during
     // the
     // handshake when setting up a game, because if the screen turns off, the
@@ -715,14 +802,5 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    @Override
-    public void onInvitationReceived(Invitation invitation) {
-
-    }
-
-    @Override
-    public void onInvitationRemoved(String s) {
-
-    }
 }
 
