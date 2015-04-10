@@ -6,7 +6,7 @@ android {
             keyAlias 'gruppe19'
             keyPassword 'Asdf1234'
             storePassword 'Asdf1234'
-            storeFile file('C:/Users/Rawar/Documents/Progark-Gruppe-A19/gruppe19.jks')
+            storeFile file('C:/Users/Bakkan/Documents/GitHub/Progark-Gruppe-A19/gruppe19.jks')
         }
     }
     compileSdkVersion 21

@@ -106,6 +106,9 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     // Message buffer for sending messages
     byte[] mMsgBuf = new byte[2];
 
+    // Variable that holds the layout number
+    int layout = 0;
+
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -505,6 +508,10 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
     // Clears the flag that keeps the screen on.
     void stopKeepingScreenOn() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    public int getLayout(){
+        return layout;
     }
 }
 

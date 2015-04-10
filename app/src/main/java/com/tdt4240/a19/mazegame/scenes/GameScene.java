@@ -113,7 +113,7 @@ public class GameScene extends BaseScene implements ContactListener {
     }
 
     private void setupTimer() {
-        final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.000", "000:000.0000".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
+        final Text timerText = new Text(190, 29, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.000", "000:000.0000".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
         attachChild(timerText);
         registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
             @Override
@@ -124,7 +124,11 @@ public class GameScene extends BaseScene implements ContactListener {
                 ms = ms % 1000;
                 sec = sec % 60;
                 min = min % 60;
-                timerText.setText(min + ":" + sec + "." + ms);
+                if (sec < 10){
+                    timerText.setText(min + ":0" + sec + ":" + ms);
+                } else {
+                timerText.setText(min + ":" + sec + ":" + ms);
+                }
             }
         }));
     }

@@ -56,7 +56,7 @@ public class MazeLayer extends Entity {
     private Sprite background, start, goal;
 
     /**
-     * Colors of the walls, set by theme (todo)
+     * Colors of the walls, set by theme
      */
     private String backgroundColor, wallColor;
 
@@ -70,6 +70,7 @@ public class MazeLayer extends Entity {
 
     public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY, PhysicsWorld world) {
         // BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
         this.mazeX = pMazeX;
         this.mazeY = pMazeY;
         this.centerX = pCenterX;
@@ -85,11 +86,12 @@ public class MazeLayer extends Entity {
         /**
          * Default settings for color layout
          */
-         setLayout(3);
+        // setLayout(game.getLayout());
+        setLayout(1);
 
         setupBackground();
-        setupWalls(world);
         setupStartNGoal(world);
+        setupWalls(world);
 
     }
 
@@ -113,11 +115,11 @@ public class MazeLayer extends Entity {
         // setup horizontal walls on the top and bottom (frame)
         int x = 0;
         int y = 0;
-        final SpriteBatch horizontalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor, mazeSize).getTexture(), horiWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
+        final SpriteBatch horizontalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor).getTexture(), horiWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
         horizontalBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         for (boolean bol : horiWalls) {
             if (bol){
-                Sprite wall = new Sprite(x * xBase, y * yBase, ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor, mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
+                Sprite wall = new Sprite(x * xBase, y * yBase, ResourcesManager.getInstance().spriteHandler.getHoriWall(wallColor), ResourcesManager.getInstance().vertexBufferObjectManager);
                 horizontalBatch.draw(wall);
                 walls.add(wall);
 
@@ -138,11 +140,11 @@ public class MazeLayer extends Entity {
         x = 0;
         y = 0;
         // game.getSpriteHandler().getVertWall(wallColor, mazeSize).getTexture();
-        final SpriteBatch verticalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor, mazeSize).getTexture(), vertWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
+        final SpriteBatch verticalBatch = new SpriteBatch(ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor).getTexture(), vertWalls.length, ResourcesManager.getInstance().vertexBufferObjectManager);
         verticalBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
         for (boolean bol : vertWalls) {
             if (bol){
-                Sprite wall = new Sprite(x*xBase, y*yBase, ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor, mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
+                Sprite wall = new Sprite(x*xBase, y*yBase, ResourcesManager.getInstance().spriteHandler.getVertWall(wallColor), ResourcesManager.getInstance().vertexBufferObjectManager);
                 verticalBatch.draw(wall);
                 walls.add(wall);
 
@@ -172,8 +174,8 @@ public class MazeLayer extends Entity {
 
         int goalX = ((RecursiveBacktrackerMaze)maze).getEndX();
 
-        start = new Sprite(startX*xBase, background.getHeight()-(background.getHeight()/mazeY), ResourcesManager.getInstance().spriteHandler.getStart(mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
-        goal = new Sprite(goalX*xBase, 0, ResourcesManager.getInstance().spriteHandler.getGoal(mazeSize), ResourcesManager.getInstance().vertexBufferObjectManager);
+        start = new Sprite(startX*xBase, background.getHeight()-(background.getHeight()/mazeY), ResourcesManager.getInstance().spriteHandler.getStart(), ResourcesManager.getInstance().vertexBufferObjectManager);
+        goal = new Sprite(goalX*xBase, 0, ResourcesManager.getInstance().spriteHandler.getGoal(), ResourcesManager.getInstance().vertexBufferObjectManager);
 
         Body body = PhysicsFactory.createBoxBody(physicsWorld, goal, BodyDef.BodyType.StaticBody, PhysicsFactory.createFixtureDef(0, 0, 0));
         body.setUserData("goal");
@@ -187,32 +189,37 @@ public class MazeLayer extends Entity {
      * @param layout
      * Layoutsetup: Background & Wall
      *
-     * Layout 0: Black & White
-     * Layout 1: White & Black
-     * Layout 2: Black & Turquoise
-     * Layout 3: Black & Red
-     * Layout 4: Turquoise & Black
+     * Layout 0: Android & Black
+     * Layout 1: Black & Android
+     * Layout 2: Black & Blue
+     * Layout 3: Blue & Black
+     * Layout 4: Black & Red
+     * Layout 5: Yellow & Black
      */
     public void setLayout(int layout){
         switch (layout){
             case 0:
-                backgroundColor = "Black";
-                wallColor = "White";
+                backgroundColor = "Android";
+                wallColor = "Black";
                 break;
             case 1:
-                backgroundColor = "White";
-                wallColor = "Black";
+                backgroundColor = "Black";
+                wallColor = "Android";
                 break;
             case 2:
                 backgroundColor = "Black";
-                wallColor = "Turquoise";
+                wallColor = "Blue";
                 break;
             case 3:
+                backgroundColor = "Blue";
+                wallColor = "Black";
+                break;
+            case 4:
                 backgroundColor = "Black";
                 wallColor = "Red";
                 break;
-            case 4:
-                backgroundColor = "Turquoise";
+            case 5:
+                backgroundColor = "Yellow";
                 wallColor = "Black";
                 break;
         }
