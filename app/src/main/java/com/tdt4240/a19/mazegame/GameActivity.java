@@ -12,10 +12,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
@@ -54,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GameActivity extends GBaseGameActivity implements ConnectionCallbacks, OnConnectionFailedListener, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener {
+public class GameActivity extends GBaseGameActivity implements ConnectionCallbacks, OnConnectionFailedListener, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
 
     public static final int CAMERA_WIDTH = 480;
     public static final int CAMERA_HEIGHT = 800;
@@ -195,15 +197,14 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(Bundle connectionHint) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
 
         Log.d(TAG, "Sign-in succeeded.");
 
-       /* // register listener so we are notified if we receive an invitation to play
+        // register listener so we are notified if we receive an invitation to play
         // while we are in the game
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
-// TODO: Ser næremere her
         if (connectionHint != null) {
             Log.d(TAG, "onConnected: connection hint provided. Checking for invite.");
             Invitation inv = connectionHint
@@ -214,7 +215,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 acceptInviteToRoom(inv.getInvitationId());
                 return;
             }
-        }*/
+        }
 
         // TODO: switchToMainScreen
         /*switchToMainScreen();*/
@@ -271,7 +272,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
     public void invitePlayer() {
         Log.d(TAG, "Inviteplayer()called.");
-        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 3);
+        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 10);
         startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
@@ -436,6 +437,21 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             //switchToMainScreen();
         }
     }
+
+    // Show the waiting room UI to track the progress of other players as they enter the
+    // room and get connected.
+    void showWaitingRoom(Room room) {
+        // minimum number of players required for our game
+        // For simplicity, we require everyone to join the game before we start it
+        // (this is signaled by Integer.MAX_VALUE).
+        final int MIN_PLAYERS = Integer.MAX_VALUE;
+        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient, room, MIN_PLAYERS);
+
+        // show waiting room UI
+        startActivityForResult(i, RC_WAITING_ROOM);
+    }
+
+
     // TODO: Legg til knapp for denne funksjonen
     public void startQuickGame() {
         Log.d(TAG, "StartQuickGame()called.");
@@ -501,10 +517,24 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 //        findViewById(R.id.invitation_popup).setVisibility(showInvPopup ? View.VISIBLE : View.GONE);
 //    }
 
+    // Show error message about game being cancelled and return to main screen.
+    void showGameError() {
+        BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
+        // TODO: To mainscreen
+        //switchToMainScreen();
+    }
 
     @Override
-    public void onRoomCreated(int i, Room room) {
+    public void onRoomCreated(int statusCode, Room room) {
+        Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
+            Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
+            showGameError();
+            return;
+        }
 
+        // show the waiting room UI
+        showWaitingRoom(room);
     }
 
     @Override
@@ -683,6 +713,16 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // Clears the flag that keeps the screen on.
     void stopKeepingScreenOn() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onInvitationReceived(Invitation invitation) {
+
+    }
+
+    @Override
+    public void onInvitationRemoved(String s) {
+
     }
 }
 
