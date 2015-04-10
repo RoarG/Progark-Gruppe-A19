@@ -80,7 +80,7 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
 
     // Set to true to automatically start the sign in flow when the Activity starts.
     // Set to false to require the user to click the button in order to sign in.
-    private boolean mAutoStartSignInFlow = true;
+    private boolean mAutoStartSignInFlow = false;
 
     /*
     API integration MP
@@ -152,21 +152,15 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
 
-    mGoogleApiClient.connect();
+    //mGoogleApiClient.connect();
     }
-
-    @Override
-    public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-
-    }
-
-/*
 
     // TODO: Se om det er behov for å kalle connect. Står på auto connect atm.
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//    }
+    @Override
+    protected void onStart() {
+       // mGoogleApiClient.connect();
+        super.onStart();
+    }
 
 
     @Override
@@ -214,12 +208,8 @@ public class GameActivity extends GBaseGameActivity implements GoogleApiClient.C
         // TODO: switchToMainScreen
         /*switchToMainScreen();*/
 
- //   }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
     }
+
 
     @Override
     public void onConnectionSuspended(int i) {
