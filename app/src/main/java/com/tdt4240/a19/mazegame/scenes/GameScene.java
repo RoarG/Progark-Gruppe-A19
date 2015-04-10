@@ -111,6 +111,15 @@ public class GameScene extends BaseScene implements ContactListener {
             }
         }));
     }
+    public String getEndTime(){
+        long ms = endTime - startTime;
+        long sec = ms / 1000;
+        long min = sec / 60;
+        ms = ms % 1000;
+        sec = sec % 60;
+        min = min % 60;
+        return min + ":" + sec + ":" + ms;
+    }
 
     private void setupTimer() {
         final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.000", "000:000.0000".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
