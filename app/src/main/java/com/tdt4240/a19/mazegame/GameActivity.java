@@ -137,9 +137,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         spriteHandler.setupSprites();
         spriteHandler.buildAtlases();
         spriteHandler.loadAtlases();
-
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("fonts/");
-
         fontHandler = new FontHandler();
         fontHandler.createFonts();
         fontHandler.loadFonts();*/
@@ -409,7 +407,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
             mRoomId = null;
             // TODO: Laoding wait screen
-           // switchToScreen(R.id.screen_wait);
+            // switchToScreen(R.id.screen_wait);
         } else {
             // TODO: Sett main screen
             //switchToMainScreen();
@@ -447,8 +445,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void onInvitationRemoved(String invitationId) {
         if (mIncomingInvitationId.equals(invitationId)) {
             mIncomingInvitationId = null;
-           // TODO: Hide the inv
-           // switchToScreen(mCurScreen); // This will hide the invitation popup
+            // TODO: Hide the inv
+            // switchToScreen(mCurScreen); // This will hide the invitation popup
         }
     }
 
@@ -496,7 +494,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         //switchToScreen(R.id.screen_game);
 
         // TODO: Slett dette
-       // findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
+        // findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
 
         // run the gameTick() method every 5 second to update the game.
         final Handler h = new Handler();
@@ -549,7 +547,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         }
 
         for (; i < arr.length; ++i) {
-           // ((TextView) findViewById(arr[i])).setText("");
+            // ((TextView) findViewById(arr[i])).setText("");
         }
     }
     // TODO: Trenger vi denne til å holde views?
@@ -815,7 +813,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
      * MISC SECTION. Miscellaneous methods.
      */
 
-// TODO: Inv popup?
+    // TODO: Inv popup?
     // Sets the flag to keep this screen on. It's recommended to do that during
     // the
     // handshake when setting up a game, because if the screen turns off, the
@@ -832,4 +830,3 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
 }
-
