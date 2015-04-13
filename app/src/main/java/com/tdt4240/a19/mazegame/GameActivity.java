@@ -3,7 +3,6 @@ package com.tdt4240.a19.mazegame;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -496,20 +495,19 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         //switchToScreen(R.id.screen_game);
 
         // TODO: Slett dette
-       // findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
-
-        // run the gameTick() method every 5 second to update the game.
-        final Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mSecondsLeft <= 0)
-                    return;
-                // TODO: Gametick() every 5 sec
-                //gameTick();
-                h.postDelayed(this, 5000);
-            }
-        }, 5000);
+//        findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
+//
+//        // run the gameTick() method every second to update the game.
+//        final Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mSecondsLeft <= 0)
+//                    return;
+//                gameTick();
+//                h.postDelayed(this, 1000);
+//            }
+//        }, 1000);
     }
 
     // indicates the player scored one point
@@ -525,33 +523,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         broadcastScore(false);
     }
 
-    // updates the screen with the scores from our peers
-    void updatePeerScoresDisplay() {
-        //((TextView) findViewById(R.id.score0)).setText(formatScore(mScore) + " - Me");
-        int[] arr = {
-
-//                R.id.score1, R.id.score2, R.id.score3
-        };
-        int i = 0;
-
-        if (mRoomId != null) {
-            for (Participant p : mParticipants) {
-                String pid = p.getParticipantId();
-                if (pid.equals(mMyId))
-                    continue;
-                if (p.getStatus() != Participant.STATUS_JOINED)
-                    continue;
-//                int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-//                ((TextView) findViewById(arr[i])).setText(formatScore(score) + " - " +
-//                        p.getDisplayName());
-//                ++i;
-            }
-        }
-
-        for (; i < arr.length; ++i) {
-           // ((TextView) findViewById(arr[i])).setText("");
-        }
-    }
     // TODO: Trenger vi denne til å holde views?
 //    // This array lists all the individual screens our game has. GooglePlay
 //    final static int[] SCREENS = {
