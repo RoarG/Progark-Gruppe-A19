@@ -118,7 +118,7 @@ public class GameScene extends BaseScene implements ContactListener {
         ms = ms % 1000;
         sec = sec % 60;
         min = min % 60;
-        return min + ":" + sec + ":" + ms;
+        return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
     }
 
     private void setupTimer() {
@@ -133,7 +133,7 @@ public class GameScene extends BaseScene implements ContactListener {
                 ms = ms % 1000;
                 sec = sec % 60;
                 min = min % 60;
-                timerText.setText(min + ":" + sec + "." + ms);
+                timerText.setText((min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + "." + ms);
             }
         }));
     }
