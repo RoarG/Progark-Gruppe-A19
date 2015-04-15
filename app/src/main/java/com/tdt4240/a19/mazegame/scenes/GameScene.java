@@ -1,5 +1,7 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -208,7 +210,16 @@ public class GameScene extends BaseScene implements ContactListener {
         if ((a.getUserData().equals("goal") && b.getUserData().equals("player")) || (b.getUserData().equals("goal") && a.getUserData().equals("player"))) {
             if (endTime == 0) {
                 endTime = System.currentTimeMillis();
-                Log.d("Finished", "" + (endTime - startTime));
+
+                SharedPreferences prefs = ResourcesManager.getInstance().gameActivity.getSharedPreferences("hiscores", Context.MODE_PRIVATE);
+                int score = prefs.getInt("seed" + mazeLayer.getMaze().getSeed(), 0);
+
+                if ((endTime - startTime) < score) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putInt("seed" + mazeLayer.getMaze().getSeed(), (int) (endTime - startTime));
+                    editor.commit();
+                }
+
                 SceneManager.getInstance().createVictoryScene();
             }
         }

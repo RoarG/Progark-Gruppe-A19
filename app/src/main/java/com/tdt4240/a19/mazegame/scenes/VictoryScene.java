@@ -97,7 +97,7 @@ public class VictoryScene extends BaseScene implements org.andengine.entity.scen
     public boolean onMenuItemClicked(org.andengine.entity.scene.menu.MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
         switch (pMenuItem.getID()) {
             case MENU_LEADERBOARD:
-                //SceneManager.getInstance().loadGameScene(engine);
+                SceneManager.getInstance().createLocalLeaderboardScene();
                 return true;
             case MENU_NEWGAME:
                 SceneManager.getInstance().loadGameScene(engine);
