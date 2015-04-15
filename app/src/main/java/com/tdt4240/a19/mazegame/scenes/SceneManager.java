@@ -21,6 +21,7 @@ public class SceneManager {
     private BaseScene splashScene;
     private BaseScene popupScene;
     private BaseScene victoryScene;
+    private BaseScene localLeaderboardScene;
     private static final SceneManager INSTANCE = new SceneManager();
     private SceneType currentSceneType = SceneType.SCENE_MENUSCENE;
     private BaseScene currentScene;
@@ -35,7 +36,8 @@ public class SceneManager {
         SCENE_SPLASHSCENE,
         SCENE_SETTINGSSCENE,
         SCENE_VICTORYSCENE,
-        SCENE_POPUPSCENE
+        SCENE_POPUPSCENE,
+        SCENE_LOCAL_LEADERBOARD
     }
 
     public void setScene(BaseScene scene) {
@@ -58,6 +60,9 @@ public class SceneManager {
                 setScene(welcomeScene);
                 break;
                 */
+            case SCENE_LOCAL_LEADERBOARD:
+                setScene(localLeaderboardScene);
+                break;
             case SCENE_GAMESCENE:
                 setScene(gameScene);
                 break;
@@ -117,6 +122,12 @@ public class SceneManager {
         setScene(menuScene);
         disposeSplashScene();
     }
+
+    public void createLocalLeaderboardScene() {
+        localLeaderboardScene = new LocalLeaderboardScene();
+        setScene(localLeaderboardScene);
+    }
+
     public void loadPopupScene(){
         ResourcesManager.getInstance().loadGameResources();
       //  popupScene = new PopupScene();
