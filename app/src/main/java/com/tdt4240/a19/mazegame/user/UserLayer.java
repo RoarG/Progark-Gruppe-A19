@@ -48,6 +48,7 @@ public class UserLayer extends Entity {
             }
         };
 
+
         mazeBackground.attachChild(user);
     }
 

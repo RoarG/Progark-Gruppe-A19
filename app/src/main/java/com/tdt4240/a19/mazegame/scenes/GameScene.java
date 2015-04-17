@@ -211,6 +211,9 @@ public class GameScene extends BaseScene implements ContactListener {
             if (endTime == 0) {
                 endTime = System.currentTimeMillis();
 
+                // TODO: Stemmer tiden her
+                ResourcesManager.getInstance().gameActivity.endTime((int)(endTime - startTime));
+
                 SharedPreferences prefs = ResourcesManager.getInstance().gameActivity.getSharedPreferences("hiscores", Context.MODE_PRIVATE);
                 int score = prefs.getInt("seed" + mazeLayer.getMaze().getSeed(), 0);
 

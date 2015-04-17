@@ -130,6 +130,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     @Override
     public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
+        Log.w(TAG, "onCreateResources : " + pOnCreateResourcesCallback);
         /*BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         Log.w(TAG, "onCreateResources");
         spriteHandler = new SpriteHandler();
@@ -145,7 +146,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
         resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
-        mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -182,7 +183,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             public void onTimePassed(final TimerHandler pTimerHandler)
             {
                 mEngine.unregisterUpdateHandler(pTimerHandler);
+                mGoogleApiClient.connect();
                 SceneManager.getInstance().createMenuScene();
+
                 // load menu resources, create menu scene
                 // set menu scene using scene manager
                 // disposeSplashScene();
@@ -192,14 +195,13 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         pOnPopulateSceneCallback.onPopulateSceneFinished();
         Log.w(TAG, "onPopulateScene");
 
-
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
 
-        Log.d(TAG, "Sign-in succeeded.");
+        Log.d(TAG, "connectionHint: " + connectionHint);
 
         // register listener so we are notified if we receive an invitation to play
         // while we are in the game
@@ -382,7 +384,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     // Accept the given invitation.
-    void acceptInviteToRoom(String invId) {
+    public void acceptInviteToRoom(String invId) {
         // accept the invitation
         Log.d(TAG, "Accepting invitation: " + invId);
         RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(this);
@@ -433,14 +435,18 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         // We got an invitation to play a game! So, store it in
         // mIncomingInvitationId
         // and show the popup on the screen.
-        // TODO: Kan vise noe i UI
-//        mIncomingInvitationId = invitation.getInvitationId();
-//        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
-//                invitation.getInviter().getDisplayName() + " " +
-//                        getString(R.string.is_inviting_you));
+        // TODO: Kan vise noe i UI Vis pop!
+        mIncomingInvitationId = invitation.getInvitationId();
+        Log.d(TAG, "onInvitationReceived()called." + mIncomingInvitationId);
+/*        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
+                invitation.getInviter().getDisplayName() + " " +
+                        getString(R.string.is_inviting_you));*/
 //        switchToScreen(mCurScreen); // This will show the invitation popup
     }
 
+    public String getInvId () {
+        return mIncomingInvitationId;
+    }
     @Override
     public void onInvitationRemoved(String invitationId) {
         if (mIncomingInvitationId.equals(invitationId)) {
@@ -448,6 +454,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             // TODO: Hide the inv
             // switchToScreen(mCurScreen); // This will hide the invitation popup
         }
+
     }
 
     // TODO: Legg til knapp for denne funksjonen
@@ -492,7 +499,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         broadcastScore(false);
         // TODO: Sett game screen
         //switchToScreen(R.id.screen_game);
-
+        SceneManager.getInstance().loadGameScene(resourcesManager.engine);
         // TODO: Slett dette
         // findViewById(R.id.button_click_me).setVisibility(View.VISIBLE);
 
@@ -501,10 +508,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mSecondsLeft <= 0)
-                    return;
-                // TODO: Gametick() every 5 sec
-                //gameTick();
+               // if (mSecondsLeft <= 0)
+                 //   return;
+                // TODO: Set if Når spillet er over.
+                // Broadcast every 5 sec
+                Log.d(TAG, "Broadcast() called." );
+                scoreOnePoint();
                 h.postDelayed(this, 5000);
             }
         }, 5000);
@@ -512,8 +521,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     // indicates the player scored one point
     void scoreOnePoint() {
-        if (mSecondsLeft <= 0)
-            return; // too late!
+      //  if (mSecondsLeft <= 0)
+       //     return; // too late!
         ++mScore;
         // TODO: update view
         //updateScoreDisplay();
@@ -777,6 +786,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         }
     }
 
+    public void endTime(int finalTime){
+        mScore = finalTime;
+        broadcastScore(true);
+    }
     // Broadcast my score to everybody else.
     void broadcastScore(boolean finalScore) {
         if (!mMultiplayer)
