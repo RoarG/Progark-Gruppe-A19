@@ -115,7 +115,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     String mIncomingInvitationId = null;
 
     // Message buffer for sending messages
-    byte[] mMsgBuf = new byte[2];
+    byte[] mMsgBuf = new byte[5];
+    byte[] mMsgBufPos = new byte[2];
+
+    private float xpos;
+    private float ypos;
+
 
 
     @Override
@@ -523,13 +528,18 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     void scoreOnePoint() {
       //  if (mSecondsLeft <= 0)
        //     return; // too late!
+        // TODO: for testing
         ++mScore;
+        xpos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getX();
+        ypos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getY();
+        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos );
+
         // TODO: update view
         //updateScoreDisplay();
         //updatePeerScoresDisplay();
 
         // broadcast our new score to our peers
-        broadcastScore(false);
+        broadcastPos(false);
     }
 
     // updates the screen with the scores from our peers
@@ -798,8 +808,16 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         // First byte in message indicates whether it's a final score or not
         mMsgBuf[0] = (byte) (finalScore ? 'F' : 'U');
 
-        // Second byte is the score.
-        mMsgBuf[1] = (byte) mScore;
+        int tempScoreX = mScore % 100000;
+        int tempScoreXX = tempScoreX % 10000;
+        int tempScoreXXX = tempScoreXX % 1000;
+        int tempScoreXXXX = tempScoreXXX % 100;
+
+        // Second byte is the score. 0 - 1800
+        mMsgBuf[1] = (byte) tempScoreX;
+        mMsgBuf[2] = (byte) tempScoreXX;
+        mMsgBuf[3] = (byte) tempScoreXXX;
+        mMsgBuf[4] = (byte) tempScoreXXXX;
 
         // Send to every other participant.
         for (Participant p : mParticipants) {
@@ -814,6 +832,35 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             } else {
                 // it's an interim score notification, so we can use unreliable
                 Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBuf, mRoomId,
+                        p.getParticipantId());
+            }
+        }
+    }
+
+    // Broadcast my score to everybody else.
+    void broadcastPos(boolean finalScore) {
+        if (!mMultiplayer)
+            return; // playing single-player mode
+
+        // First byte in message indicates whether it's a final score or not
+        mMsgBufPos[0] = (byte) (xpos / 20);
+
+        // Second byte is the score.
+        mMsgBufPos[1] = (byte) (ypos / 30);
+
+        // Send to every other participant.
+        for (Participant p : mParticipants) {
+            if (p.getParticipantId().equals(mMyId))
+                continue;
+            if (p.getStatus() != Participant.STATUS_JOINED)
+                continue;
+            if (finalScore) {
+                // final score notification must be sent via reliable message
+                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBufPos,
+                        mRoomId, p.getParticipantId());
+            } else {
+                // it's an interim score notification, so we can use unreliable
+                Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBufPos, mRoomId,
                         p.getParticipantId());
             }
         }
