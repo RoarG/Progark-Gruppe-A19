@@ -3,6 +3,7 @@ package com.tdt4240.a19.mazegame.scenes;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 
 import org.andengine.entity.scene.background.Background;
@@ -24,6 +25,7 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
     private final int MENU_EXITGAME = 3;
     private final int BEST_TIME = 4;
     private final int MY_TIME = 5;
+    private final int GAME_SCORE = 6;
 
     @Override
     public void createScene() {
@@ -32,6 +34,7 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
 
         String hiscore = getBestTime();
         String endTime = SceneManager.getInstance().getGameScene().getEndTime();
+        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         final IMenuItem newGameMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_NEWGAME, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem menuGameMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MENU, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
@@ -42,6 +45,11 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
         final IMenuItem bestTime = new TextMenuItem(BEST_TIME, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Best: " + hiscore,vertexBufferObjectManager);
         final IMenuItem myTime = new TextMenuItem(MY_TIME, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Curr: "  + endTime,vertexBufferObjectManager);
 
+        final Text gameResult = new Text(100,150,ResourcesManager.getInstance().fontHandler.getBasicFont(),"Result",ResourcesManager.getInstance().vertexBufferObjectManager);
+        attachChild(gameResult);
+
+        final IMenuItem gameScore = new TextMenuItem(GAME_SCORE,ResourcesManager.getInstance().fontHandler.getBasicFont(),game.endResult(),vertexBufferObjectManager);
+
         Text newGameText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "New Game", ResourcesManager.getInstance().vertexBufferObjectManager);
         newGameMenuItem.attachChild(newGameText);
         Text menuText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Menu", ResourcesManager.getInstance().vertexBufferObjectManager);
@@ -51,14 +59,16 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
 
         menuChildScene.addMenuItem(bestTime);
         menuChildScene.addMenuItem(myTime);
+        menuChildScene.addMenuItem(gameScore);
         menuChildScene.addMenuItem(newGameMenuItem);
         menuChildScene.addMenuItem(menuGameMenuItem);
         menuChildScene.addMenuItem(exitGameMenuItem);
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        bestTime.setPosition(myTime.getX(), myTime.getY() -200);
-        myTime.setPosition(myTime.getX(), myTime.getY() -150);
+        bestTime.setPosition(myTime.getX(), myTime.getY() -250);
+        myTime.setPosition(myTime.getX(), myTime.getY() -200);
+        gameScore.setPosition(gameScore.getX(),gameScore.getY() - 100);
         newGameMenuItem.setPosition(newGameMenuItem.getX(),newGameMenuItem.getY()+130);
         menuGameMenuItem.setPosition(menuGameMenuItem.getX(), menuGameMenuItem.getY()+160);
         exitGameMenuItem.setPosition(exitGameMenuItem.getX(), exitGameMenuItem.getY()+190);
@@ -84,7 +94,7 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
 
     @Override
     public void onBackKeyPressed() {
-
+           SceneManager.getInstance().createVictoryScene();
     }
 
     @Override

@@ -23,7 +23,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
     private MenuScene menuChildScene;
     private final int MENU_PLAY = 0;
     private final int MENU_MULTIPLAYER = 1;
-   // private final int MENU_MULTIPLAYER2 = 4;
+   private final int MENU_MULTIPLAYER2 = 4;
     private final int MENU_OPTIONS = 2;
     private final int MENU_LOGO = 3;
     private GameActivity game;
@@ -37,7 +37,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
 
         final IMenuItem playMenuItem =          new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem multiplayerMenuItem =   new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER,ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
-      //  final IMenuItem multiplayerMenuItem2 =   new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER2,ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
+        final IMenuItem multiplayerMenuItem2 =  new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER2,ResourcesManager.getInstance().spriteHandler.getButtonSprite(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem optionsMenuItem =       new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem logo =                  new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGO, ResourcesManager.getInstance().spriteHandler.getLogoIcon(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
 
@@ -46,8 +46,8 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         playMenuItem.attachChild(playText);
         Text multiplayerText = new Text(5.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"Multiplayer",ResourcesManager.getInstance().vertexBufferObjectManager);
         multiplayerMenuItem.attachChild(multiplayerText);
-      //  Text multiplayerText2 = new Text(10.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"GO",ResourcesManager.getInstance().vertexBufferObjectManager);
-       // multiplayerMenuItem2.attachChild(multiplayerText2);
+        Text multiplayerText2 = new Text(10.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"GO",ResourcesManager.getInstance().vertexBufferObjectManager);
+        multiplayerMenuItem2.attachChild(multiplayerText2);
         Text optionsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Options", ResourcesManager.getInstance().vertexBufferObjectManager);
         optionsMenuItem.attachChild(optionsText);
         Text logoText= new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "", ResourcesManager.getInstance().vertexBufferObjectManager);
@@ -55,7 +55,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(multiplayerMenuItem);
-      //  menuChildScene.addMenuItem(multiplayerMenuItem2);
+        menuChildScene.addMenuItem(multiplayerMenuItem2);
         menuChildScene.addMenuItem(optionsMenuItem);
         menuChildScene.addMenuItem(logo);
         menuChildScene.buildAnimations();
@@ -63,7 +63,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
 
         playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY()+200);
         multiplayerMenuItem.setPosition(multiplayerMenuItem.getX(),multiplayerMenuItem.getY()+250);
-       // multiplayerMenuItem2.setPosition(multiplayerMenuItem2.getX(),multiplayerMenuItem2.getY()+275);
+        multiplayerMenuItem2.setPosition(multiplayerMenuItem2.getX(),multiplayerMenuItem2.getY()+275);
         optionsMenuItem.setPosition(optionsMenuItem.getX(),optionsMenuItem.getY()+300);
         logo.setPosition(logo.getX(),logo.getY()-260);
 
@@ -99,8 +99,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_OPTIONS:
-               // SceneManager.getInstance().loadSettingScene(engine);
-                game.acceptInviteToRoom(game.getInvId());
+                SceneManager.getInstance().loadSettingScene(engine);
                 return true;
             case MENU_MULTIPLAYER:
                // SceneManager.getInstance().loadGameRoomScene(engine);

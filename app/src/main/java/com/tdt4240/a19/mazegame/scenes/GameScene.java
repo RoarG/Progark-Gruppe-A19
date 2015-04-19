@@ -49,6 +49,7 @@ public class GameScene extends BaseScene implements ContactListener {
 
     private long endTime = 0;
     private long startTime;
+    GameActivity game = ResourcesManager.getInstance().gameActivity;
 
     /**
      * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
@@ -59,7 +60,6 @@ public class GameScene extends BaseScene implements ContactListener {
     public void createScene() {
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
-        GameActivity game = ResourcesManager.getInstance().gameActivity;
 
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
@@ -210,9 +210,8 @@ public class GameScene extends BaseScene implements ContactListener {
         if ((a.getUserData().equals("goal") && b.getUserData().equals("player")) || (b.getUserData().equals("goal") && a.getUserData().equals("player"))) {
             if (endTime == 0) {
                 endTime = System.currentTimeMillis();
-
                 // TODO: Stemmer tiden her
-                ResourcesManager.getInstance().gameActivity.endTime((int)(endTime - startTime));
+                game.endTime((int)(endTime - startTime));
 
                 SharedPreferences prefs = ResourcesManager.getInstance().gameActivity.getSharedPreferences("hiscores", Context.MODE_PRIVATE);
                 int score = prefs.getInt("seed" + mazeLayer.getMaze().getSeed(), 0);
@@ -224,6 +223,7 @@ public class GameScene extends BaseScene implements ContactListener {
                 }
 
                 SceneManager.getInstance().createVictoryScene();
+                SceneManager.getInstance().disposePopupScene();
             }
         }
 

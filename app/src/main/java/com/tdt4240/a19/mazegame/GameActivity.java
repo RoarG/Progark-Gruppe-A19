@@ -311,6 +311,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                     // this means leaving the room too. In more elaborate games, this could mean
                     // something else (like minimizing the waiting room UI).
                     leaveRoom();
+
                 }
                 break;
             case RC_SIGN_IN:
@@ -756,6 +757,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // Participants who sent us their final score.
     Set<String> mFinishedParticipants = new HashSet<String>();
 
+
     // Called when we receive a real-time message from the network.
     // Messages in our game are made up of 2 bytes: the first one is 'F' or 'U'
     // indicating
@@ -772,7 +774,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             // score update.
             int existingScore = mParticipantScore.containsKey(sender) ?
                     mParticipantScore.get(sender) : 0;
-            int thisScore = (int) buf[1];
+            int thisScore;
+            if(buf.length>=4){
+                thisScore = ((buf[1]*1000) + (buf[2]*100) + (buf[3]*10) + buf[4]);
+            }else
+                thisScore = (int) buf[1];
             if (thisScore > existingScore) {
                 // this check is necessary because packets may arrive out of
                 // order, so we
@@ -795,11 +801,23 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             }
         }
     }
+    public String endResult(){
+        String Result = "";
+        int i = 1;
+        broadcastScore(true);
+        if(mParticipants==null)
+            return "HighScore list not available in singlePlayer";
+        for(i=0;i< mParticipants.size();i++){
+            Result = Result + i +". " + mParticipants.get(i).getDisplayName() + " Tid: " + mParticipantScore.get(mParticipants.get(i).getParticipantId())  + "\n";
+        }
+        return Result;
+    }
 
     public void endTime(int finalTime){
         mScore = finalTime;
         broadcastScore(true);
     }
+
     // Broadcast my score to everybody else.
     void broadcastScore(boolean finalScore) {
         if (!mMultiplayer)

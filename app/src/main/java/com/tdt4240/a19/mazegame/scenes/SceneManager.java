@@ -115,6 +115,11 @@ public class SceneManager {
         splashScene.disposeScene();
         splashScene = null;
     }
+    private void disposeGameScene(){
+        ResourcesManager.getInstance().unloadSplashScreen();
+        gameRoomScene.disposeScene();
+        gameRoomScene = null;
+    }
     public void createMenuScene()
     {
         ResourcesManager.getInstance().loadMenuResources();
