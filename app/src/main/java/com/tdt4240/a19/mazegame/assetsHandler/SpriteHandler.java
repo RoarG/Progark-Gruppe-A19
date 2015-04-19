@@ -62,27 +62,8 @@ public class SpriteHandler {
         blackBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "BlackBackground.png");
         whiteBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "WhiteBackground.png");
         redBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "RedBackground.png");
-        turquoiseBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "TurquoiseBackground.png");
+        turquoiseBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "blueBackground.png");
 
-        /**
-         * 10x15 setup
-         */
-
-        // 10x15: Horizontal walls
-        whw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "whw10x15.png");
-        bhw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "bhw10x15.png");
-        rhw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rhw10x15.png");
-        thw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "thw10x15.png");
-
-        // 10x15: Vertical walls
-        wvw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "wvw10x15.png");
-        bvw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "bvw10x15.png");
-        rvw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rvw10x15.png");
-        tvw10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "tvw10x15.png");
-
-        // 10x15: Start and goal
-        start10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "start10x15.png");
-        goal10x15 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "goal10x15.png");
 
         /**
          * 20x30 setup
@@ -90,19 +71,19 @@ public class SpriteHandler {
 
         // 20x30: Horizontal walls
         whw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "whw20x30.png");
-        bhw20x30= BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "bhw20x30.png");
+        bhw20x30= BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "blackHori.png");
         rhw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rhw20x30.png");
         thw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "thw20x30.png");
 
         // 20x30: Vertical walls
         wvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "wvw20x30.png");
-        bvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "bvw20x30.png");
+        bvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "blackVert.png");
         rvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "rvw20x30.png");
         tvw20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "tvw20x30.png");
 
         // 20x30: Start and goal
-        start20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "start20x30.png");
-        goal20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "goal20x30.png");
+        start20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "start.png");
+        goal20x30 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "goal.png");
 
         /**
          * 30x45 setup
@@ -121,8 +102,8 @@ public class SpriteHandler {
         tvw30x45 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "tvw30x45.png");
 
         // 30x45: Start and goal
-        start30x45 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "start30x45.png");
-        goal30x45 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "goal30x45.png");
+        start30x45 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "start.png");
+        goal30x45 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sprites, game, "goal.png");
 
 
     }
