@@ -85,11 +85,11 @@ public class MazeLayer extends Entity {
         /**
          * Default settings for color layout
          */
-         setLayout(3);
+         setLayout(4);
 
         setupBackground();
-        setupWalls(world);
         setupStartNGoal(world);
+        setupWalls(world);
 
     }
 
