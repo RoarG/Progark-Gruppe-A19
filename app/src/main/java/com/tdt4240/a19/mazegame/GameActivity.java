@@ -51,6 +51,8 @@ import org.andengine.ui.IGameInterface;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -148,7 +150,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         fontHandler.createFonts();
         fontHandler.loadFonts();*/
 
-        ResourcesManager.prepareManager(mEngine,this,camera,getVertexBufferObjectManager());
+        ResourcesManager.prepareManager(mEngine, this, camera, getVertexBufferObjectManager());
         resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
 
@@ -183,10 +185,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     @Override
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-        mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback()
-        {
-            public void onTimePassed(final TimerHandler pTimerHandler)
-            {
+        mEngine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
+            public void onTimePassed(final TimerHandler pTimerHandler) {
                 mEngine.unregisterUpdateHandler(pTimerHandler);
                 mGoogleApiClient.connect();
                 SceneManager.getInstance().createMenuScene();
@@ -544,31 +544,52 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     // updates the screen with the scores from our peers
-    void updatePeerScoresDisplay() {
-        //((TextView) findViewById(R.id.score0)).setText(formatScore(mScore) + " - Me");
-        int[] arr = {
-
-//                R.id.score1, R.id.score2, R.id.score3
-        };
+    public String updatePeerScoresDisplay(String myScore) {
+        String Result = "";
         int i = 0;
+        String[][] scoreMatrix = new String[8][2];
 
-        if (mRoomId != null) {
+        if (mParticipants != null) {
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId))
                     continue;
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
-//                int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-//                ((TextView) findViewById(arr[i])).setText(formatScore(score) + " - " +
-//                        p.getDisplayName());
-//                ++i;
+              int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
+                if(pid.equals(mMyId))
+                    scoreMatrix[i][0] = myScore+"";
+                else
+                    scoreMatrix[i][0] = score+"";
+
+                scoreMatrix[i][1] = mParticipants.get(i).getDisplayName();
+                Result = Result + (i+1) + ". " + scoreMatrix[i][1] + " Time: " + scoreMatrix[i][0] + "\n";
+
+                ++i;
             }
         }
+      /*  Arrays.sort(scoreMatrix, new Comparator<String[]>(){
+            @Override
+            public int compare(final String[] entry1,final String[] entry2){
+                final String score1 = entry1[0];
+                final String score2 = entry2[0];
+                return score1.compareTo(score2);
+            }
+        });*/
 
-        for (; i < arr.length; ++i) {
-            // ((TextView) findViewById(arr[i])).setText("");
+        return Result;
+
+    }
+    public String endResult(){
+        String Result = "";
+        int i = 1;
+        broadcastScore(true);
+        if(mParticipants==null)
+            return "HighScore list not available in singlePlayer";
+        for(i=0;i< mParticipants.size();i++){
+            Result = Result + i +". " + mParticipants.get(i).getDisplayName() + " Tid: " + mParticipantScore.get(mParticipants.get(i).getParticipantId())  + "\n";
         }
+        return Result;
     }
     // TODO: Trenger vi denne til å holde views?
 //    // This array lists all the individual screens our game has. GooglePlay
@@ -801,17 +822,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             }
         }
     }
-    public String endResult(){
-        String Result = "";
-        int i = 1;
-        broadcastScore(true);
-        if(mParticipants==null)
-            return "HighScore list not available in singlePlayer";
-        for(i=0;i< mParticipants.size();i++){
-            Result = Result + i +". " + mParticipants.get(i).getDisplayName() + " Tid: " + mParticipantScore.get(mParticipants.get(i).getParticipantId())  + "\n";
-        }
-        return Result;
-    }
+
 
     public void endTime(int finalTime){
         mScore = finalTime;
