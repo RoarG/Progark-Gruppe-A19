@@ -115,7 +115,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     int mEndtime = 0;
 
     //The DisplayName of the person who has invited me to a game
-    String mInviterName=" ";
+    String mInviterName = " ";
     // If non-null, this is the id of the invitation we received via the
     // invitation listener
     String mIncomingInvitationId = null;
@@ -128,6 +128,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     private float ypos;
 
     public int mMytime = 0;
+
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -221,7 +222,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                     .getParcelable(Multiplayer.EXTRA_INVITATION);
             if (inv != null && inv.getInvitationId() != null) {
                 // retrieve and cache the invitation ID
-                Log.d(TAG,"onConnected: connection hint has a room invite!");
+                Log.d(TAG, "onConnected: connection hint has a room invite!");
                 acceptInviteToRoom(inv.getInvitationId());
                 return;
             }
@@ -268,18 +269,21 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void onSignInSucceeded() {
 
     }
+
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         System.exit(0);
     }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             SceneManager.getInstance().getCurrentScene().onBackKeyPressed();
         }
         return false;
     }
+
     public void invitePlayer() {
         Log.d(TAG, "Inviteplayer()called.");
         Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 10);
@@ -326,12 +330,13 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 if (responseCode == RESULT_OK) {
                     mGoogleApiClient.connect();
                 } else {
-                    BaseGameUtils.showActivityResultError(this,requestCode,responseCode, R.string.signin_other_error);
+                    BaseGameUtils.showActivityResultError(this, requestCode, responseCode, R.string.signin_other_error);
                 }
                 break;
         }
         super.onActivityResult(requestCode, responseCode, intent);
     }
+
     // Handle the result of the "Select players UI" we launched when the user clicked the
     // "Invite friends" button. We react by creating a room with those players.
     private void handleSelectPlayersResult(int response, Intent data) {
@@ -406,7 +411,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
 
-
     // Leave the room.
     void leaveRoom() {
         Log.d(TAG, "Leaving room.");
@@ -454,27 +458,32 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
 
     }
+
     //NullObject Pattern
-    public void setInviterName(Invitation invitation){
-        if(invitation.getInviter().getDisplayName()!=null)
-             this.mInviterName = invitation.getInviter().getDisplayName();
+    public void setInviterName(Invitation invitation) {
+        if (invitation.getInviter().getDisplayName() != null)
+            this.mInviterName = invitation.getInviter().getDisplayName();
         else
             this.mInviterName = "TEST";
 
-        Log.d(TAG,"|||||||||||||||||||||||||"+mInviterName+ "|||||||||||||||||||||||||||");
+        Log.d(TAG, "|||||||||||||||||||||||||" + mInviterName + "|||||||||||||||||||||||||||");
     }
-    public String getInviterName(){
-        if(this.mInviterName!=null)
+
+    public String getInviterName() {
+        if (this.mInviterName != null)
             return this.mInviterName;
         else
             return "Something failed";
     }
+
     public void accept() {
         int bajs = 0;
     }
-    public String getInvId () {
+
+    public String getInvId() {
         return mIncomingInvitationId;
     }
+
     @Override
     public void onInvitationRemoved(String invitationId) {
         if (mIncomingInvitationId.equals(invitationId)) {
@@ -536,11 +545,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-               // if (mSecondsLeft <= 0)
-                 //   return;
+                // if (mSecondsLeft <= 0)
+                //   return;
                 // TODO: Set if Når spillet er over.
                 // Broadcast every 5 sec
-                Log.d(TAG, "Broadcast() called." );
+                Log.d(TAG, "Broadcast() called.");
                 scoreOnePoint();
                 h.postDelayed(this, 5000);
             }
@@ -549,13 +558,13 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     // indicates the player scored one point
     void scoreOnePoint() {
-      //  if (mSecondsLeft <= 0)
-       //     return; // too late!
+        //  if (mSecondsLeft <= 0)
+        //     return; // too late!
         // TODO: for testing
         ++mScore;
         xpos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getX();
         ypos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getY();
-        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos );
+        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
 
         // TODO: update view
         //updateScoreDisplay();
@@ -578,31 +587,47 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                     Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
                     scoreMatrix[i][0] = mMytime + "";
                     scoreMatrix[i][1] = p.getDisplayName();
-                }
-                else {
+                } else {
                     int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-                    scoreMatrix[i][0] = score + "";
-                    scoreMatrix[i][1] = p.getDisplayName();
+                    if (score != 0) {
+                        scoreMatrix[i][0] = score + "";
+                        scoreMatrix[i][1] = p.getDisplayName();
+                    }
+                    if (p.getStatus() != Participant.STATUS_JOINED)
+                        continue;
+
+                    ++i;
                 }
-                if (p.getStatus() != Participant.STATUS_JOINED)
-                    continue;
-
-                Result = Result + (i+1) + ". " + scoreMatrix[i][1] + " Time: " + scoreMatrix[i][0] + "\n";
-
-                ++i;
-            }
-        }
-      /*  Arrays.sort(scoreMatrix, new Comparator<String[]>(){
+            }/*
+        Arrays.sort(scoreMatrix, new Comparator<String[]>(){
             @Override
             public int compare(final String[] entry1,final String[] entry2){
-                final String score1 = entry1[0];
-                final String score2 = entry2[0];
+                final String score1 = entry1[1];
+                final String score2 = entry2[1];
                 return score1.compareTo(score2);
             }
         });*/
-
+            for (int j = 0; j < mParticipants.size(); j++) {
+                Result = Result + (j + 1) + ". " + scoreMatrix[j][1] + " Time: " + getEndTime(scoreMatrix[j][0]) + "\n";
+            }
+        }
         return Result;
+    }
+    public String getEndTime(String time){
+        String scoreTime;
+        if(time==null){
+            return "You Suck";
+        }
+        int endTime = Integer.parseInt(time);
+        if(endTime==0){
+            return "Not Finished";
+        }
+        int min = endTime/1000;
+        int sec = endTime/10;
+        int ms = endTime%10;
 
+        scoreTime =(min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
+        return scoreTime;
     }
     public String endResult(){
         String Result = "";

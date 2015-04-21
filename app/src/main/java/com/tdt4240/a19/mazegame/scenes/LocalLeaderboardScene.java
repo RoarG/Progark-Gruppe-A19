@@ -29,7 +29,7 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
 
     @Override
     public void createScene() {
-        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+        setBackground(new Background(new Color(1.0f, 1.0f, 1.0f)));
         MenuScene menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
         String hiscore = getBestTime();
