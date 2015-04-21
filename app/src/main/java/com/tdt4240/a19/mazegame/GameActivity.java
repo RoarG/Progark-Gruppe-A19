@@ -574,14 +574,19 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         if (mParticipants != null) {
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
-                if (pid.equals(mMyId))
-                    scoreMatrix[i][0] = mMytime+"";
+                if (pid.equals(mMyId)) {
+                    Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
+                    scoreMatrix[i][0] = mMytime + "";
                     scoreMatrix[i][1] = p.getDisplayName();
+                }
+                else {
+                    int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
+                    scoreMatrix[i][0] = score + "";
+                    scoreMatrix[i][1] = p.getDisplayName();
+                }
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
-              int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-                scoreMatrix[i][0] = score+"";
-                scoreMatrix[i][1] = p.getDisplayName();
+
                 Result = Result + (i+1) + ". " + scoreMatrix[i][1] + " Time: " + scoreMatrix[i][0] + "\n";
 
                 ++i;
@@ -868,7 +873,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         int tempScoreX = (int)min;
         int tempScoreXX = (int)sec/10;
         int tempScoreXXX = (int)sec%10;
-        int tempScoreXXXX = (int) ms/1000;
+        int tempScoreXXXX = (int) ms/100;
 
         Log.d(TAG, "mScore: " + mScore);
         Log.d(TAG, "ms: " + ms + "sec: " + sec + "min: " + min );
