@@ -544,7 +544,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     // updates the screen with the scores from our peers
-    public String updatePeerScoresDisplay(String myScore) {
+    public String updatePeerScoresDisplay() {
         String Result = "";
         int i = 0;
         String[][] scoreMatrix = new String[8][2];
@@ -557,12 +557,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
               int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-                if(pid.equals(mMyId))
-                    scoreMatrix[i][0] = myScore+"";
-                else
-                    scoreMatrix[i][0] = score+"";
-
-                scoreMatrix[i][1] = mParticipants.get(i).getDisplayName();
+                scoreMatrix[i][0] = score+"";
+                scoreMatrix[i][1] = p.getDisplayName();
                 Result = Result + (i+1) + ". " + scoreMatrix[i][1] + " Time: " + scoreMatrix[i][0] + "\n";
 
                 ++i;
@@ -813,7 +809,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
             // update the scores on the screen
             // TODO: Update score view
-            //updatePeerScoresDisplay();
+            updatePeerScoresDisplay();
 
             // if it's a final score, mark this participant as having finished
             // the game
@@ -837,10 +833,17 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         // First byte in message indicates whether it's a final score or not
         mMsgBuf[0] = (byte) (finalScore ? 'F' : 'U');
 
-        int tempScoreX = mScore % 100000;
-        int tempScoreXX = tempScoreX % 10000;
-        int tempScoreXXX = tempScoreXX % 1000;
-        int tempScoreXXXX = tempScoreXXX % 100;
+
+        long ms = (long)mScore;
+        long sec = ms/1000;
+        long min = sec /60;
+        ms=ms%1000;
+        sec = sec%60;
+        min = min &60;
+        int tempScoreX = (int)min;
+        int tempScoreXX = (int)sec/10;
+        int tempScoreXXX = (int)sec%10;
+        int tempScoreXXXX = (int) ms%1000;
 
         // Second byte is the score. 0 - 1800
         mMsgBuf[1] = (byte) tempScoreX;

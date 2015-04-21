@@ -24,6 +24,10 @@ import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.menu.MenuScene;
+import org.andengine.entity.scene.menu.item.IMenuItem;
+import org.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.util.FPSCounter;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
@@ -49,6 +53,7 @@ public class GameScene extends BaseScene implements ContactListener {
 
     private long endTime = 0;
     private long startTime;
+    int exitGameValue = 0;
     GameActivity game = ResourcesManager.getInstance().gameActivity;
 
     /**
@@ -60,7 +65,6 @@ public class GameScene extends BaseScene implements ContactListener {
     public void createScene() {
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
-
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
         registerUpdateHandler(physicsWorld);
         physicsWorld.setContactListener(this);
@@ -71,6 +75,7 @@ public class GameScene extends BaseScene implements ContactListener {
         userLayer.init(mazeLayer, physicsWorld);
 
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+
 
         attachChild(mazeLayer);
         attachChild(userLayer);
@@ -85,7 +90,10 @@ public class GameScene extends BaseScene implements ContactListener {
 
     @Override
     public void onBackKeyPressed() {
-        SceneManager.getInstance().createVictoryScene();
+        if(exitGameValue==1)
+             SceneManager.getInstance().loadMenuScene();
+        else
+            exitGameValue++;
     }
 
     @Override

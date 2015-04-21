@@ -106,6 +106,7 @@ public class SceneManager {
     {
         ResourcesManager.getInstance().loadSplashScreen();
         splashScene = new SplashScene();
+        //splashScene.createScene();
         currentScene = splashScene;
         pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
     }

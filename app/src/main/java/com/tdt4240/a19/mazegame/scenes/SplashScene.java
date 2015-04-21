@@ -1,7 +1,11 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
+
+import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.util.GLState;
 import org.andengine.util.color.Color;
 
 /**
@@ -9,10 +13,24 @@ import org.andengine.util.color.Color;
  */
 public class SplashScene extends BaseScene{
 
+    private Sprite splash;
 
     @Override
     public void createScene() {
-        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+        setBackground(new Background(new Color(1.0f, 1.0f, 1,0f)));
+        splash = new Sprite(0, 0, resourcesManager.splash_region, vertexBufferObjectManager)
+        {
+            @Override
+            protected void preDraw(GLState pGLState, Camera pCamera)
+            {
+                super.preDraw(pGLState, pCamera);
+                pGLState.enableDither();
+            }
+        };
+
+        splash.setScale(1.8f);
+        splash.setPosition(110, 200);
+        attachChild(splash);
     }
 
     @Override
@@ -28,6 +46,8 @@ public class SplashScene extends BaseScene{
     @Override
     public void disposeScene()
     {
+        splash.detachSelf();
+        splash.dispose();
         this.detachSelf();
         this.dispose();
     }

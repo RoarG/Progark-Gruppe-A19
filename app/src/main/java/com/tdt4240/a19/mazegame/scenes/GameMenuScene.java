@@ -18,19 +18,21 @@ import com.tdt4240.a19.mazegame.scenes.SceneManager;
 
 /**
  * Created by mathi_000 on 25.03.2015.
+ *
+ * This class is the Main menu scene in our game. It sets up the background and the required buttons and logo.
  */
 public class GameMenuScene  extends BaseScene implements org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener{
     private MenuScene menuChildScene;
     private final int MENU_PLAY = 0;
     private final int MENU_MULTIPLAYER = 1;
-   private final int MENU_MULTIPLAYER2 = 4;
+    private final int MENU_MULTIPLAYER2 = 4;
     private final int MENU_OPTIONS = 2;
     private final int MENU_LOGO = 3;
     private GameActivity game;
 
     private void createMenuChildScene()
     {
-        setBackground(new Background(new Color(0.31f, 0.61f, 0.40f)));
+        setBackground(new Background(new Color(1.0f, 1.0f, 1.0f)));
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
         game = ResourcesManager.getInstance().gameActivity;
@@ -46,9 +48,9 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         playMenuItem.attachChild(playText);
         Text multiplayerText = new Text(5.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"Multiplayer",ResourcesManager.getInstance().vertexBufferObjectManager);
         multiplayerMenuItem.attachChild(multiplayerText);
-        Text multiplayerText2 = new Text(10.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"GO",ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text multiplayerText2 = new Text(50.0f,5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(),"GO",ResourcesManager.getInstance().vertexBufferObjectManager);
         multiplayerMenuItem2.attachChild(multiplayerText2);
-        Text optionsText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Options", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text optionsText = new Text(30.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Options", ResourcesManager.getInstance().vertexBufferObjectManager);
         optionsMenuItem.attachChild(optionsText);
         Text logoText= new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "", ResourcesManager.getInstance().vertexBufferObjectManager);
         logo.attachChild(logoText);
@@ -61,7 +63,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY()+200);
+        playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY()+225);
         multiplayerMenuItem.setPosition(multiplayerMenuItem.getX(),multiplayerMenuItem.getY()+250);
         multiplayerMenuItem2.setPosition(multiplayerMenuItem2.getX(),multiplayerMenuItem2.getY()+275);
         optionsMenuItem.setPosition(optionsMenuItem.getX(),optionsMenuItem.getY()+300);

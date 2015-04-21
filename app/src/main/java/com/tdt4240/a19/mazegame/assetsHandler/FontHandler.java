@@ -21,7 +21,7 @@ public class FontHandler {
     public void createFonts() {
         GameActivity game = ResourcesManager.getInstance().gameActivity;
 
-        basic = FontFactory.create(game.getFontManager(), game.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+        basic = FontFactory.create(game.getFontManager(), game.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28);
     }
 
     public void loadFonts() {

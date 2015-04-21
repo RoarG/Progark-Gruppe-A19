@@ -48,7 +48,7 @@ public class LocalLeaderboardScene extends BaseScene implements MenuScene.IOnMen
         final Text gameResult = new Text(100,150,ResourcesManager.getInstance().fontHandler.getBasicFont(),"Result",ResourcesManager.getInstance().vertexBufferObjectManager);
         attachChild(gameResult);
 
-        final IMenuItem gameScore = new TextMenuItem(GAME_SCORE,ResourcesManager.getInstance().fontHandler.getBasicFont(),game.updatePeerScoresDisplay(SceneManager.getInstance().getGameScene().getEndTime()),vertexBufferObjectManager);
+        final IMenuItem gameScore = new TextMenuItem(GAME_SCORE,ResourcesManager.getInstance().fontHandler.getBasicFont(),game.updatePeerScoresDisplay(),vertexBufferObjectManager);
 
         Text newGameText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "New Game", ResourcesManager.getInstance().vertexBufferObjectManager);
         newGameMenuItem.attachChild(newGameText);

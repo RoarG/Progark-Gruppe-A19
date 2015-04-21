@@ -45,13 +45,13 @@ public class VictoryScene extends BaseScene implements org.andengine.entity.scen
         final Text victory = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "CONGRATULATIONS \n YOU SOLVED THE MAZE!", ResourcesManager.getInstance().vertexBufferObjectManager);
         attachChild(victory);
 
-        Text leaderBoardText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Leaderboard", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text leaderBoardText = new Text(30.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Scores", ResourcesManager.getInstance().vertexBufferObjectManager);
         leaderBoardMenuItem.attachChild(leaderBoardText);
-        Text newGameText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "New Game", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text newGameText = new Text(15.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "New Game", ResourcesManager.getInstance().vertexBufferObjectManager);
         newGameMenuItem.attachChild(newGameText);
-        Text menuText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Menu", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text menuText = new Text(40.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Menu", ResourcesManager.getInstance().vertexBufferObjectManager);
         menuGameMenuItem.attachChild(menuText);
-        Text exitGameText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Exit", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text exitGameText = new Text(40.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Exit", ResourcesManager.getInstance().vertexBufferObjectManager);
         exitGameMenuItem.attachChild(exitGameText);
 
         menuChildScene.addMenuItem(myTime);

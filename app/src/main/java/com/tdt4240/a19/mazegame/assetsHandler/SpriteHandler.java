@@ -4,6 +4,7 @@ import com.tdt4240.a19.mazegame.GameActivity;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
@@ -23,7 +24,6 @@ public class SpriteHandler {
     private BuildableBitmapTextureAtlas sprites;
     private BuildableBitmapTextureAtlas popup;
     private BuildableBitmapTextureAtlas logos;
-
     private ITextureRegion play_button;
     private ITextureRegion user;
     private ITextureRegion whiteBackground, blackBackground, redBackground, turquoiseBackground;
@@ -45,7 +45,7 @@ public class SpriteHandler {
         backgrounds = new BuildableBitmapTextureAtlas(game.getTextureManager(), 2048, 2048);
         sprites = new BuildableBitmapTextureAtlas(game.getTextureManager(), 1024, 1024);
         popup = new BuildableBitmapTextureAtlas(game.getTextureManager(), 400,400);
-        logos = new BuildableBitmapTextureAtlas(game.getTextureManager(),1024,1024);
+        logos = new BuildableBitmapTextureAtlas(game.getTextureManager(),2048,2048);
     }
 
     public void setupSprites() {
@@ -53,6 +53,7 @@ public class SpriteHandler {
 
         play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
+
 
         // Logos
         logoIcon = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons,game,"logo256.png");
@@ -115,6 +116,7 @@ public class SpriteHandler {
             sprites.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
             popup.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,0,1));
             logos.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0,0,1));
+
         } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e) {
             e.printStackTrace();
         }
@@ -126,6 +128,7 @@ public class SpriteHandler {
         this.sprites.load();
         this.popup.load();
         this.logos.load();
+
     }
 
     public ITextureRegion getButtonSprite() {
@@ -135,8 +138,6 @@ public class SpriteHandler {
     public ITextureRegion getUserSprite() {
         return user;
     }
-
-    public ITextureRegion getPopupBackground(){ return popupBackground; }
     public ITextureRegion getLogoIcon(){ return logoIcon; }
     public  ITextureRegion getGoal(int mazeSize) {
         if (mazeSize == 1){

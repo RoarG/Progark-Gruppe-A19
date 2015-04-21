@@ -5,7 +5,10 @@ import com.tdt4240.a19.mazegame.GameActivity;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObject;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
@@ -23,6 +26,8 @@ public class ResourcesManager {
 
     public SpriteHandler spriteHandler;
     public FontHandler fontHandler;
+    public ITextureRegion splash_region;
+    private BitmapTextureAtlas splashTextureAtlas;
 
     public void loadMenuResources() {
         loadMenuGraphics();
@@ -67,12 +72,15 @@ public class ResourcesManager {
     }
 
     public void loadSplashScreen() {
-
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        splashTextureAtlas = new BitmapTextureAtlas(gameActivity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+        splash_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, gameActivity, "logo256.png", 0, 0);
+        splashTextureAtlas.load();
     }
 
     public void unloadSplashScreen() {
-
-
+        splashTextureAtlas.unload();
+        splash_region = null;
     }
     public static void prepareManager(Engine engine, GameActivity gameActivity, Camera camera, VertexBufferObjectManager vertexBufferObjectManager){
         getInstance().engine = engine;
