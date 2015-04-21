@@ -127,7 +127,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     private float xpos;
     private float ypos;
 
-
+    public int mMytime = 0;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -575,7 +575,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId))
-                    scoreMatrix[i][0] = mScore+"Test";
+                    scoreMatrix[i][0] = mMytime+"";
                     scoreMatrix[i][1] = p.getDisplayName();
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
@@ -808,8 +808,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
         byte[] buf = rtm.getMessageData();
         String sender = rtm.getSenderParticipantId();
+        if (buf.length > 3) {
+            Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1] + "/" + (int) buf[2] + "/" + (int) buf[3] + "/" + (int) buf[4]);
+        }
         Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
-
         if (buf[0] == 'F' || buf[0] == 'U') {
             // score update.
             int existingScore = mParticipantScore.containsKey(sender) ?
@@ -866,13 +868,18 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         int tempScoreX = (int)min;
         int tempScoreXX = (int)sec/10;
         int tempScoreXXX = (int)sec%10;
-        int tempScoreXXXX = (int) ms%1000;
+        int tempScoreXXXX = (int) ms/1000;
 
+        Log.d(TAG, "mScore: " + mScore);
+        Log.d(TAG, "ms: " + ms + "sec: " + sec + "min: " + min );
         // Second byte is the score. 0 - 1800
         mMsgBuf[1] = (byte) tempScoreX;
         mMsgBuf[2] = (byte) tempScoreXX;
         mMsgBuf[3] = (byte) tempScoreXXX;
         mMsgBuf[4] = (byte) tempScoreXXXX;
+
+        mMytime = (tempScoreX*1000) + (tempScoreXX*100) + (tempScoreXXX*10) + tempScoreXXXX;
+        Log.d(TAG, "Mytime: " + mMytime);
 
         // Send to every other participant.
         for (Participant p : mParticipants) {
