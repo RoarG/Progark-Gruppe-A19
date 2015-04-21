@@ -112,6 +112,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // My participant ID in the currently active game
     String mMyId = null;
 
+    int mEndtime = 0;
+
     //The DisplayName of the person who has invited me to a game
     String mInviterName=" ";
     // If non-null, this is the id of the invitation we received via the
@@ -330,7 +332,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         }
         super.onActivityResult(requestCode, responseCode, intent);
     }
-
     // Handle the result of the "Select players UI" we launched when the user clicked the
     // "Invite friends" button. We react by creating a room with those players.
     private void handleSelectPlayersResult(int response, Intent data) {
@@ -574,7 +575,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId))
-                    continue;
+                    scoreMatrix[i][0] = mScore+"Test";
+                    scoreMatrix[i][1] = p.getDisplayName();
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
               int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
