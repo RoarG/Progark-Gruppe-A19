@@ -563,9 +563,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         // broadcast our new score to our peers
         broadcastPos(false);
     }
-    String getMyTime(){
-       return SceneManager.getInstance().getGameScene().getEndTime();
-    }
 
     // updates the screen with the scores from our peers
     public String updatePeerScoresDisplay() {
@@ -577,8 +574,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId))
-                    scoreMatrix[i][0] = getMyTime();
-                    scoreMatrix[i][1] = p.getDisplayName();
+                    continue;
                 if (p.getStatus() != Participant.STATUS_JOINED)
                     continue;
               int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
@@ -864,11 +860,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         long min = sec /60;
         ms=ms%1000;
         sec = sec%60;
-        min = min %60;
+        min = min &60;
         int tempScoreX = (int)min;
         int tempScoreXX = (int)sec/10;
         int tempScoreXXX = (int)sec%10;
-        int tempScoreXXXX = (int) ms/100;
+        int tempScoreXXXX = (int) ms%1000;
 
         // Second byte is the score. 0 - 1800
         mMsgBuf[1] = (byte) tempScoreX;
@@ -936,6 +932,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // handshake when setting up a game, because if the screen turns off, the
     // game will be
     // cancelled.
+    void keepScreenOn() {
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
 
     // Clears the flag that keeps the screen on.
     void stopKeepingScreenOn() {
