@@ -122,13 +122,15 @@ public class GameScene extends BaseScene implements ContactListener {
         }));
     }
     public String getEndTime(){
+        String endTimeString="";
         long ms = endTime - startTime;
         long sec = ms / 1000;
         long min = sec / 60;
         ms = ms % 1000;
         sec = sec % 60;
         min = min % 60;
-        return (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
+        endTimeString =(min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
+        return endTimeString;
     }
 
     private void setupTimer() {

@@ -26,15 +26,17 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
     private final int MENU_LEAVE = 1;
 
     private void createMenuChildScene() {
-        setBackground(new Background(new Color(0.31f, 0.61f, 0.40f)));
+        setBackground(new Background(new Color(1.0f, 1.0f, 1.0f)));
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
+        final Text invitation = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), ResourcesManager.getInstance().gameActivity.getInviterName() + "\n has invited you to a game, \n  accept or decline to continue.", ResourcesManager.getInstance().vertexBufferObjectManager);
+        attachChild(invitation);
         final IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f, 1);
         final IMenuItem leaveMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LEAVE, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f, 1);
 
-        Text startText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Start", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text startText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Accept", ResourcesManager.getInstance().vertexBufferObjectManager);
         startMenuItem.attachChild(startText);
-        Text leaveText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Exit", ResourcesManager.getInstance().vertexBufferObjectManager);
+        Text leaveText = new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Decline", ResourcesManager.getInstance().vertexBufferObjectManager);
         leaveMenuItem.attachChild(leaveText);
 
         menuChildScene.addMenuItem(startMenuItem);
@@ -75,7 +77,7 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
     public boolean onMenuItemClicked(org.andengine.entity.scene.menu.MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
         switch (pMenuItem.getID()) {
             case MENU_START:
-                SceneManager.getInstance().loadGameScene(engine);
+                ResourcesManager.getInstance().gameActivity.acceptInviteToRoom(ResourcesManager.getInstance().gameActivity.getInvId());
                 return true;
             case MENU_LEAVE:
                 SceneManager.getInstance().loadMenuScene();

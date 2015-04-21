@@ -51,7 +51,7 @@ public class SpriteHandler {
     public void setupSprites() {
         GameActivity game = ResourcesManager.getInstance().gameActivity;
 
-        play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "button.png");
+        play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "buttonTexture1_150x.png");
         user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
 
 
