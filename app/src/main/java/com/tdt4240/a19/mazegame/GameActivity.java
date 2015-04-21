@@ -448,7 +448,18 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 invitation.getInviter().getDisplayName() + " " +
                         getString(R.string.is_inviting_you));*/
 //        switchToScreen(mCurScreen); // This will show the invitation popup
+
     }
+
+
+    public void accept() {
+        if (mIncomingInvitationId != null){
+            acceptInviteToRoom(mIncomingInvitationId);
+            mIncomingInvitationId = null;
+        }
+
+    }
+
 
     public String getInvId () {
         return mIncomingInvitationId;
