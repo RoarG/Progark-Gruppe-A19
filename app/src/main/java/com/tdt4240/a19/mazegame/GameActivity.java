@@ -414,18 +414,17 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         } else if(autoMatchCriteria==null) {
-            int randomSeed=randomSeed();
-            setSeed(randomSeed);
-            broadcastSeed(randomSeed);
+
         }
         // TODO: Sett loadingscreen
         //switchToScreen(R.id.screen_wait);
         resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
+
         Log.d(TAG, "Room created, waiting for it to be ready...");
     }
     private int randomSeed(){
-        int max =4,min=0;
+        int max =3,min=0;
         Random random = new Random();
         int randomSeed = random.nextInt((max-min)+1)+min;
         return randomSeed;
@@ -528,7 +527,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         else
             this.mInviterName = "TEST";
 
-        Log.d(TAG, "|||||||||||||||||||||||||" + mInviterName + "|||||||||||||||||||||||||||");
     }
 
     public String getInviterName() {
@@ -749,6 +747,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             showGameError();
             return;
         }
+        int randomSeed=randomSeed();
+        setSeed(randomSeed);
+        broadcastSeed(randomSeed);
 
         // show the waiting room UI
         showWaitingRoom(room);
@@ -964,8 +965,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     void broadcastSeed(int seed){
-        if(!mMultiplayer)
+        if(!mMultiplayer) {
+            Log.d(TAG, "MULTIPLAYER NOT SET");
             return;
+        }
         Log.d(TAG, "Seed = " + seed);
         mSeedBuf[0] = (byte) seed;
         for (Participant p : mParticipants) {
@@ -975,7 +978,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 continue;
             else {
                 // it's an interim score notification, so we can use unreliable
-                Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mSeedBuf, mRoomId,
+                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,null, mSeedBuf, mRoomId,
                         p.getParticipantId());
             }
         }
