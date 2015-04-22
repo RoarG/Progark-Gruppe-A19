@@ -553,7 +553,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 //   return;
                 // TODO: Set if Når spillet er over.
                 // Broadcast every 5 sec
-                Log.d(TAG, "Broadcast() called.");
+                // Log.d(TAG, "Broadcast() called.");
                 scoreOnePoint();
                 h.postDelayed(this, 5000);
             }
@@ -568,14 +568,17 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         ++mScore;
         xpos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getX();
         ypos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getY();
-        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
+        // Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
 
         // TODO: update view
         //updateScoreDisplay();
         //updatePeerScoresDisplay();
 
         // broadcast our new score to our peers
-        broadcastPos(false);
+        if (!isDone()){
+            broadcastPos(false);
+        }
+
     }
 
     // updates the screen with the scores from our peers
@@ -588,7 +591,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId)) {
-                    Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
+                    // Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
                     scoreMatrix[i][0] = mMytime + "";
                     scoreMatrix[i][1] = p.getDisplayName();
                 } else {
@@ -976,7 +979,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 continue;
             if (p.getStatus() != Participant.STATUS_JOINED)
                 continue;
-            if (isDone()){
+            if (finalBroadcast){
+                Log.w("MultiMazed", "Final broadcast: Position");
                 Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
                         mRoomId, p.getParticipantId());
             } else {
@@ -1024,5 +1028,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public ArrayList<Participant> getParticipants(){ return mParticipants; }
 
     public boolean isDone(){ return isFinished; }
+
+    public String getMyId(){ return mMyId; }
 
 }

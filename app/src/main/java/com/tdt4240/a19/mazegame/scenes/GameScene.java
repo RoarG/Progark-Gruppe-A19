@@ -93,6 +93,7 @@ public class GameScene extends BaseScene implements ContactListener {
             setupGhostTimer();
         } else {
             Log.w("MultiMazed", "SINGLEPLAYER");
+            // testPosition();
         }
 
         attachChild(mazeLayer);
@@ -191,6 +192,15 @@ public class GameScene extends BaseScene implements ContactListener {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 hideGhosts();
+            }
+        }));
+    }
+
+    private void testPosition(){
+        registerUpdateHandler(new TimerHandler(5.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                Log.w("POS", "X:" + (int) (userLayer.getUser().getX()/20) + ". Y: " + (int) (userLayer.getUser().getY()/30) + ". Exact x:" + userLayer.getUser().getX() + ". Exact y: " + userLayer.getUser().getY());
             }
         }));
     }
@@ -369,7 +379,10 @@ public class GameScene extends BaseScene implements ContactListener {
     void setupGhosts(){
         ghosts = new ArrayList<Ghost>();
         for (Participant p : game.getParticipants()){
-            ghosts.add(new Ghost(0, 0, ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), p.getParticipantId()));
+            if (!p.getParticipantId().equals(game.getMyId())){
+                Log.w("MultiMazed", "Created new ghost: " + p.getParticipantId() + "on position: x: " + userLayer.getStartX() + ". y: " + userLayer.getStartY());
+                ghosts.add(new Ghost(userLayer.getStartX(), userLayer.getStartY(), ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), p.getParticipantId()));
+            }
         }
         for (Ghost ghost : ghosts){
             mazeLayer.getMazeBackground().attachChild(ghost);
@@ -395,8 +408,11 @@ public class GameScene extends BaseScene implements ContactListener {
     }
 
     public void updateGhosts(int ghostX, int ghostY, String mParticipantID){
+        Log.w("MultiMazed", "updateGhosts called");
         for (Ghost ghost : ghosts){
-            if (ghost.getParticipantID() == mParticipantID){
+            Log.w("MultiMazed", "Checking id: getParticipantID: " + mParticipantID + ". ghostID: " + ghost.getParticipantID() + " bool: " + ghost.getParticipantID().equals(mParticipantID));
+            if (ghost.getParticipantID().equals(mParticipantID)){
+                Log.w("MultiMazed", "Position change: newX: " + ghostX + " newY: " + ghostY);
                 ghost.setPosition(ghostX*20, ghostY*30);
             }
         }
