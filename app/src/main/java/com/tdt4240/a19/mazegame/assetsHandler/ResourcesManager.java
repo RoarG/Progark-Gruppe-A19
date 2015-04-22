@@ -80,7 +80,7 @@ public class ResourcesManager {
     private void loadGameAudio() {
         try
         {
-            music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), this.gameActivity, "music/test.ogg");
+            music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), this.gameActivity, "music/rare-darkmatter.ogg");
             Log.d(TAG, " Music" + music);
         }
         catch (IOException e){
