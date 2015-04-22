@@ -24,7 +24,6 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
     private MenuScene menuChildScene;
     private final int MENU_START = 0;
     private final int MENU_LEAVE = 1;
-
     private void createMenuChildScene() {
         setBackground(new Background(new Color(1.0f, 1.0f, 1.0f)));
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);

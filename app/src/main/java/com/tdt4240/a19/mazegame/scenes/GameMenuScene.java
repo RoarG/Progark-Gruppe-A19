@@ -43,6 +43,8 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         final IMenuItem optionsMenuItem =       new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem logo =                  new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGO, ResourcesManager.getInstance().spriteHandler.getLogoIcon(),ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
 
+        ResourcesManager.getInstance().music.play();
+        ResourcesManager.getInstance().music.setLooping(true);
 
         Text playText = new Text(45.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Play", ResourcesManager.getInstance().vertexBufferObjectManager);
         playMenuItem.attachChild(playText);
@@ -54,6 +56,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         optionsMenuItem.attachChild(optionsText);
         Text logoText= new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "", ResourcesManager.getInstance().vertexBufferObjectManager);
         logo.attachChild(logoText);
+
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(multiplayerMenuItem);
@@ -109,6 +112,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 game.invitePlayer();
                 return true;
             case MENU_MULTIPLAYER2:
+                ResourcesManager.getInstance().gameActivity.startQuickGame();
                 return true;
 
             default:

@@ -38,6 +38,7 @@ import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
+
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -50,6 +51,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.ui.IGameInterface;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -112,8 +114,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // My participant ID in the currently active game
     String mMyId = null;
 
+    int mEndtime = 0;
+
     //The DisplayName of the person who has invited me to a game
-    String mInviterName=" ";
+    String mInviterName = " ";
     // If non-null, this is the id of the invitation we received via the
     // invitation listener
     String mIncomingInvitationId = null;
@@ -125,8 +129,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     private float xpos;
     private float ypos;
 
+
     boolean isFinished = false;
 
+
+
+    public int mMytime = 0;
 
 
     @Override
@@ -136,7 +144,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         //camera.setBoundsEnabled(true);
         this.camera = camera;
         Log.w(TAG, "onCreateEngineOptions");
-        return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+        EngineOptions options = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+        options.getAudioOptions().setNeedsMusic(true);
+        return options;
     }
 
     @Override
@@ -158,6 +168,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
 
+
+
     }
 
     @Override
@@ -173,7 +185,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
-
 
     }
 
@@ -221,7 +232,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                     .getParcelable(Multiplayer.EXTRA_INVITATION);
             if (inv != null && inv.getInvitationId() != null) {
                 // retrieve and cache the invitation ID
-                Log.d(TAG,"onConnected: connection hint has a room invite!");
+                Log.d(TAG, "onConnected: connection hint has a room invite!");
                 acceptInviteToRoom(inv.getInvitationId());
                 return;
             }
@@ -268,18 +279,21 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void onSignInSucceeded() {
 
     }
+
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         System.exit(0);
     }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             SceneManager.getInstance().getCurrentScene().onBackKeyPressed();
         }
         return false;
     }
+
     public void invitePlayer() {
         Log.d(TAG, "Inviteplayer()called.");
         Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 10);
@@ -326,7 +340,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 if (responseCode == RESULT_OK) {
                     mGoogleApiClient.connect();
                 } else {
-                    BaseGameUtils.showActivityResultError(this,requestCode,responseCode, R.string.signin_other_error);
+                    BaseGameUtils.showActivityResultError(this, requestCode, responseCode, R.string.signin_other_error);
                 }
                 break;
         }
@@ -407,7 +421,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
 
-
     // Leave the room.
     void leaveRoom() {
         Log.d(TAG, "Leaving room.");
@@ -455,27 +468,27 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
 
     }
+
     //NullObject Pattern
-    public void setInviterName(Invitation invitation){
-        if(invitation.getInviter().getDisplayName()!=null)
-             this.mInviterName = invitation.getInviter().getDisplayName();
+    public void setInviterName(Invitation invitation) {
+        if (invitation.getInviter().getDisplayName() != null)
+            this.mInviterName = invitation.getInviter().getDisplayName();
         else
             this.mInviterName = "TEST";
 
-        Log.d(TAG,"|||||||||||||||||||||||||"+mInviterName+ "|||||||||||||||||||||||||||");
+        Log.d(TAG, "|||||||||||||||||||||||||" + mInviterName + "|||||||||||||||||||||||||||");
     }
-    public String getInviterName(){
-        if(this.mInviterName!=null)
+
+    public String getInviterName() {
+        if (this.mInviterName != null)
             return this.mInviterName;
         else
             return "Something failed";
     }
-    public void accept() {
-        int bajs = 0;
-    }
-    public String getInvId () {
+    public String getInvId() {
         return mIncomingInvitationId;
     }
+
     @Override
     public void onInvitationRemoved(String invitationId) {
         if (mIncomingInvitationId.equals(invitationId)) {
@@ -498,7 +511,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         // TODO: Add loading screen while waiting
-        //keepScreenOn();
         resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
 
@@ -537,11 +549,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-               // if (mSecondsLeft <= 0)
-                 //   return;
+                // if (mSecondsLeft <= 0)
+                //   return;
                 // TODO: Set if Når spillet er over.
                 // Broadcast every 5 sec
-                Log.d(TAG, "Broadcast() called." );
+                Log.d(TAG, "Broadcast() called.");
                 scoreOnePoint();
                 h.postDelayed(this, 5000);
             }
@@ -550,13 +562,13 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     // indicates the player scored one point
     void scoreOnePoint() {
-      //  if (mSecondsLeft <= 0)
-       //     return; // too late!
+        //  if (mSecondsLeft <= 0)
+        //     return; // too late!
         // TODO: for testing
         ++mScore;
         xpos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getX();
         ypos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getY();
-        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos );
+        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
 
         // TODO: update view
         //updateScoreDisplay();
@@ -575,29 +587,58 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         if (mParticipants != null) {
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
-                if (pid.equals(mMyId))
-                    continue;
-                if (p.getStatus() != Participant.STATUS_JOINED)
-                    continue;
-              int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-                scoreMatrix[i][0] = score+"";
-                scoreMatrix[i][1] = p.getDisplayName();
-                Result = Result + (i+1) + ". " + scoreMatrix[i][1] + " Time: " + scoreMatrix[i][0] + "\n";
+                if (pid.equals(mMyId)) {
+                    Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
+                    scoreMatrix[i][0] = mMytime + "";
+                    scoreMatrix[i][1] = p.getDisplayName();
+                } else {
+                    int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
+                    if (score != 0) {
+                        scoreMatrix[i][0] = score + "";
+                        scoreMatrix[i][1] = p.getDisplayName();
+                    }
+                    if (p.getStatus() != Participant.STATUS_JOINED)
+                        continue;
 
-                ++i;
-            }
-        }
-      /*  Arrays.sort(scoreMatrix, new Comparator<String[]>(){
+                    ++i;
+                }
+            }/*
+        Arrays.sort(scoreMatrix, new Comparator<String[]>(){
             @Override
             public int compare(final String[] entry1,final String[] entry2){
-                final String score1 = entry1[0];
-                final String score2 = entry2[0];
+                final String score1 = entry1[1];
+                final String score2 = entry2[1];
                 return score1.compareTo(score2);
             }
         });*/
+            int k=0;
+            for (int j = 0; j < mParticipants.size(); j++) {
+                String name=scoreMatrix[j][1] ;
+                Result = Result + (k + 1) + ". " + name + " : " + getEndTime(scoreMatrix[j][0]) + "\n";
+                k++;
 
+            }
+            }
+            else if(mParticipants==null){
+                Result = "ScoreBoard not available \n in singleplayer";
+        }
         return Result;
+    }
+    public String getEndTime(String time){
+        String scoreTime;
+        if(time==null){
+            return "Time Unavailable";
+        }
+        int endTime = Integer.parseInt(time);
+        if(endTime==0){
+            return "Not Finished";
+        }
+        int min = endTime/1000;
+        int sec = endTime/10;
+        int ms = endTime%10;
 
+        scoreTime =(min < 10 ? "" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
+        return scoreTime;
     }
     public String endResult(){
         String Result = "";
@@ -814,7 +855,14 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
         byte[] buf = rtm.getMessageData();
         String sender = rtm.getSenderParticipantId();
+
         // Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
+
+
+        if (buf.length > 3) {
+            Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1] + "/" + (int) buf[2] + "/" + (int) buf[3] + "/" + (int) buf[4]);
+        }
+        Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
 
         if (buf[0] == 'F' || buf[0] == 'U') {
             // score update.
@@ -875,17 +923,21 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         long min = sec /60;
         ms=ms%1000;
         sec = sec%60;
-        min = min &60;
         int tempScoreX = (int)min;
         int tempScoreXX = (int)sec/10;
         int tempScoreXXX = (int)sec%10;
-        int tempScoreXXXX = (int) ms%1000;
+        int tempScoreXXXX = (int) ms/100;
 
+        Log.d(TAG, "mScore: " + mScore);
+        Log.d(TAG, "ms: " + ms + "sec: " + sec + "min: " + min );
         // Second byte is the score. 0 - 1800
         mMsgBuf[1] = (byte) tempScoreX;
         mMsgBuf[2] = (byte) tempScoreXX;
         mMsgBuf[3] = (byte) tempScoreXXX;
         mMsgBuf[4] = (byte) tempScoreXXXX;
+
+        mMytime = (tempScoreX*1000) + (tempScoreXX*100) + (tempScoreXXX*10) + tempScoreXXXX;
+        Log.d(TAG, "Mytime: " + mMytime);
 
         // Send to every other participant.
         for (Participant p : mParticipants) {

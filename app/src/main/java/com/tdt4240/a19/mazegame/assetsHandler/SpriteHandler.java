@@ -220,8 +220,6 @@ public class SpriteHandler {
     }
 
     public ITextureRegion getVertWall(String color, int mazeSize) {
-        System.out.println("Color: " + color);
-        System.out.println("mazeSize: " + mazeSize);
         if (mazeSize == 1){
             switch (color){
                 case "White":

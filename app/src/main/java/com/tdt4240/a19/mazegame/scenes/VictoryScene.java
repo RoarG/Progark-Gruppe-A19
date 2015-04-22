@@ -33,7 +33,7 @@ public class VictoryScene extends BaseScene implements org.andengine.entity.scen
 
     private void createMenuChildScene()
     {
-        setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
+        setBackground(new Background(new Color(1.0f, 1.0f, 1.0f)));
         menuChildScene = new MenuScene(ResourcesManager.getInstance().camera);
 
         endTime = SceneManager.getInstance().getGameScene().getEndTime();
@@ -42,7 +42,8 @@ public class VictoryScene extends BaseScene implements org.andengine.entity.scen
         final IMenuItem menuGameMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MENU, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager),1.2f,1);
         final IMenuItem exitGameMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_EXITGAME, ResourcesManager.getInstance().spriteHandler.getButtonSprite(), ResourcesManager.getInstance().vertexBufferObjectManager), 1.2f,1);
         final IMenuItem myTime = new TextMenuItem(MY_TIME, ResourcesManager.getInstance().fontHandler.getBasicFont(),endTime,vertexBufferObjectManager);
-        final Text victory = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "CONGRATULATIONS \n YOU SOLVED THE MAZE!", ResourcesManager.getInstance().vertexBufferObjectManager);
+        final Text victory = new Text(80, 50, ResourcesManager.getInstance().fontHandler.getBasicFont(), "   CONGRATULATIONS \n " +
+                                                                                                        "YOU SOLVED THE MAZE!", ResourcesManager.getInstance().vertexBufferObjectManager);
         attachChild(victory);
 
         Text leaderBoardText = new Text(30.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "Scores", ResourcesManager.getInstance().vertexBufferObjectManager);
@@ -62,7 +63,7 @@ public class VictoryScene extends BaseScene implements org.andengine.entity.scen
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        myTime.setPosition(myTime.getX(),myTime.getY()-200);
+        myTime.setPosition(myTime.getX(),myTime.getY()-100);
         leaderBoardMenuItem.setPosition(leaderBoardMenuItem.getX(), leaderBoardMenuItem.getY()+100);
         newGameMenuItem.setPosition(newGameMenuItem.getX(),newGameMenuItem.getY()+130);
         menuGameMenuItem.setPosition(menuGameMenuItem.getX(), menuGameMenuItem.getY()+160);
