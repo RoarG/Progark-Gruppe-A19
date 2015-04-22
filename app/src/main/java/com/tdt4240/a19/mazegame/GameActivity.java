@@ -601,7 +601,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 //   return;
                 // TODO: Set if Når spillet er over.
                 // Broadcast every 5 sec
-                Log.d(TAG, "Broadcast() called.");
+                // Log.d(TAG, "Broadcast() called.");
                 scoreOnePoint();
                 h.postDelayed(this, 5000);
             }
@@ -616,14 +616,17 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         ++mScore;
         xpos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getX();
         ypos = SceneManager.getInstance().getGameScene().getUserLayer().getUser().getY();
-        Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
+        // Log.d(TAG, "xpos: " + xpos + "ypos: " + ypos);
 
         // TODO: update view
         //updateScoreDisplay();
         //updatePeerScoresDisplay();
 
         // broadcast our new score to our peers
-        broadcastPos(false);
+        if (!isDone()){
+            broadcastPos(false);
+        }
+
     }
 
     // updates the screen with the scores from our peers

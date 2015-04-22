@@ -24,6 +24,8 @@ public class UserLayer extends Entity {
 
     private Sprite user;
 
+    private float startX, startY;
+
     public UserLayer() {
 
     }
@@ -37,8 +39,8 @@ public class UserLayer extends Entity {
         int xBase = (int)mazeBackground.getWidth()/maze.getWidth();
         int yBase = (int)mazeBackground.getHeight()/maze.getHeight();
 
-        float startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
-        float startY = (((RecursiveBacktrackerMaze)maze).getHeight() -1 ) * yBase + 4;
+        startX = ((RecursiveBacktrackerMaze)maze).getStartX() * xBase + 4;
+        startY = (((RecursiveBacktrackerMaze)maze).getHeight() -1 ) * yBase + 4;
 
         user = new User(startX, startY, ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), physicsWorld) {
             @Override
@@ -49,10 +51,16 @@ public class UserLayer extends Entity {
         };
 
 
+
+
         mazeBackground.attachChild(user);
     }
 
     public Sprite getUser() {
         return user;
     }
+
+    public float getStartX(){ return startX; }
+
+    public float getStartY() { return startY; }
 }
