@@ -479,11 +479,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         else
             return "Something failed";
     }
-
-    public void accept() {
-        int bajs = 0;
-    }
-
     public String getInvId() {
         return mIncomingInvitationId;
     }
@@ -510,7 +505,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         // TODO: Add loading screen while waiting
-        //keepScreenOn();
         resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
 
@@ -611,16 +605,23 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 return score1.compareTo(score2);
             }
         });*/
+            int k=0;
             for (int j = 0; j < mParticipants.size(); j++) {
-                Result = Result + (j + 1) + ". " + scoreMatrix[j][1] + " Time: " + getEndTime(scoreMatrix[j][0]) + "\n";
+                String name=scoreMatrix[j][1] ;
+                Result = Result + (k + 1) + ". " + name + " : " + getEndTime(scoreMatrix[j][0]) + "\n";
+                k++;
+
             }
+            }
+            else if(mParticipants==null){
+                Result = "ScoreBoard not available \n in singleplayer";
         }
         return Result;
     }
     public String getEndTime(String time){
         String scoreTime;
         if(time==null){
-            return "You Suck";
+            return "Time Unavailable";
         }
         int endTime = Integer.parseInt(time);
         if(endTime==0){
@@ -630,7 +631,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         int sec = endTime/10;
         int ms = endTime%10;
 
-        scoreTime =(min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
+        scoreTime =(min < 10 ? "" + min : min) + ":" + (sec < 10 ? "0" + sec : sec) + ":" + ms;
         return scoreTime;
     }
     public String endResult(){

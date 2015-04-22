@@ -57,6 +57,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
         Text logoText= new Text(20.0f, 5.0f, ResourcesManager.getInstance().fontHandler.getBasicFont(), "", ResourcesManager.getInstance().vertexBufferObjectManager);
         logo.attachChild(logoText);
 
+
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(multiplayerMenuItem);
         menuChildScene.addMenuItem(multiplayerMenuItem2);
@@ -111,6 +112,7 @@ public class GameMenuScene  extends BaseScene implements org.andengine.entity.sc
                 game.invitePlayer();
                 return true;
             case MENU_MULTIPLAYER2:
+                ResourcesManager.getInstance().gameActivity.startQuickGame();
                 return true;
 
             default:
