@@ -120,10 +120,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     // Message buffer for sending messages
     byte[] mMsgBuf = new byte[5];
-    byte[] mMsgBufPos = new byte[2];
+    byte[] mMsgBufPos = new byte[3];
 
     private float xpos;
     private float ypos;
+
+    boolean isFinished = false;
 
 
 
@@ -804,9 +806,15 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // 'S' message, which indicates that the game should start.
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage rtm) {
+        /**
+         * TODO: Add ping echo
+         * Should echo on message received (counter on echoNotReceived)
+         * Lag egen send message med tag E.
+         */
+
         byte[] buf = rtm.getMessageData();
         String sender = rtm.getSenderParticipantId();
-        Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
+        // Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
 
         if (buf[0] == 'F' || buf[0] == 'U') {
             // score update.
@@ -837,6 +845,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             if ((char) buf[0] == 'F') {
                 mFinishedParticipants.add(rtm.getSenderParticipantId());
             }
+        } if (buf[0] == 'P'){
+            int x = (int) buf[1];
+            int y = (int) buf[2];
+            Log.w(TAG, "Position received: " + (char) buf[0] + " x: " + x + " y: " + y);
+            SceneManager.getInstance().getGameScene().updateGhosts(x, y, sender);
         }
     }
 
@@ -844,6 +857,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public void endTime(int finalTime){
         mScore = finalTime;
         broadcastScore(true);
+        broadcastPos(true);
+        isFinished = true;
     }
 
     // Broadcast my score to everybody else.
@@ -879,9 +894,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             if (p.getStatus() != Participant.STATUS_JOINED)
                 continue;
             if (finalScore) {
-                // final score notification must be sent via reliable message
-                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
-                        mRoomId, p.getParticipantId());
+                    // final score notification must be sent via reliable message
+                    Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
+                            mRoomId, p.getParticipantId());
             } else {
                 // it's an interim score notification, so we can use unreliable
                 Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBuf, mRoomId,
@@ -891,15 +906,17 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     // Broadcast my score to everybody else.
-    void broadcastPos(boolean finalScore) {
+    void broadcastPos(boolean finalBroadcast) {
         if (!mMultiplayer)
             return; // playing single-player mode
 
         // First byte in message indicates whether it's a final score or not
-        mMsgBufPos[0] = (byte) (xpos / 20);
+        mMsgBufPos[0] = (byte) 'P';
+
+        mMsgBufPos[1] = (byte) ((int)(xpos / 20));
 
         // Second byte is the score.
-        mMsgBufPos[1] = (byte) (ypos / 30);
+        mMsgBufPos[2] = (byte) ((int)(ypos / 30));
 
         // Send to every other participant.
         for (Participant p : mParticipants) {
@@ -907,15 +924,23 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 continue;
             if (p.getStatus() != Participant.STATUS_JOINED)
                 continue;
+            if (isDone()){
+                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
+                        mRoomId, p.getParticipantId());
+            } else {
+                Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBufPos, mRoomId, p.getParticipantId());
+            }
+
+            /**
             if (finalScore) {
                 // final score notification must be sent via reliable message
-                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBufPos,
-                        mRoomId, p.getParticipantId());
+
             } else {
                 // it's an interim score notification, so we can use unreliable
                 Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBufPos, mRoomId,
                         p.getParticipantId());
             }
+             */
         }
     }
 
@@ -941,5 +966,11 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     void stopKeepingScreenOn() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
+
+    public boolean isMultiplayer(){ return mMultiplayer; }
+
+    public ArrayList<Participant> getParticipants(){ return mParticipants; }
+
+    public boolean isDone(){ return isFinished; }
 
 }

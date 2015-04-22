@@ -53,7 +53,7 @@ public class SpriteHandler {
 
         play_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "buttonTexture1_150x" +
                 ".png");
-        user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "user.png");
+        user = BitmapTextureAtlasTextureRegionFactory.createFromAsset(buttons, game, "userSprite.png");
 
 
         // Logos

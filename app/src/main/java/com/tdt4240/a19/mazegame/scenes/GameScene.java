@@ -12,8 +12,10 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
+import com.tdt4240.a19.mazegame.maze.Ghost;
 import com.tdt4240.a19.mazegame.maze.MazeLayer;
 import com.tdt4240.a19.mazegame.user.User;
 import com.tdt4240.a19.mazegame.user.UserLayer;
@@ -36,6 +38,9 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 import org.andengine.util.system.SystemUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Timer;
 import java.util.Vector;
 
 /**
@@ -54,7 +59,11 @@ public class GameScene extends BaseScene implements ContactListener {
     private long endTime = 0;
     private long startTime;
     int exitGameValue = 0;
-    GameActivity game = ResourcesManager.getInstance().gameActivity;
+    boolean ghostHidden = false;
+
+    private ArrayList<Ghost> ghosts;
+
+    GameActivity game;
 
     /**
      * mazeSize, int size 1, 2 or 3. (1: 10x15, 2: 20x30, 3: 30x45)
@@ -63,6 +72,7 @@ public class GameScene extends BaseScene implements ContactListener {
 
     @Override
     public void createScene() {
+        this.game = ResourcesManager.getInstance().gameActivity;
         mazeLayer = new MazeLayer();
         userLayer = new UserLayer();
         physicsWorld = new FixedStepPhysicsWorld(60, new Vector2(0, 0), false);
@@ -77,6 +87,14 @@ public class GameScene extends BaseScene implements ContactListener {
         setBackground(new Background(new Color(0.09804f, 0.6274f, 0.8784f)));
 
 
+        if (game.isMultiplayer()){
+            Log.w("MultiMazed", "MULTIPLAYER");
+            setupGhosts();
+            setupGhostTimer();
+        } else {
+            Log.w("MultiMazed", "SINGLEPLAYER");
+        }
+
         attachChild(mazeLayer);
         attachChild(userLayer);
 
@@ -86,6 +104,16 @@ public class GameScene extends BaseScene implements ContactListener {
         endTime = 0;
 
         setupTimer();
+
+
+        /*
+        registerUpdateHandler(new TimerHandler(10.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                testUpdateGhosts(20, 0, "ac");
+            }
+        }));
+         */
     }
 
     @Override
@@ -135,6 +163,7 @@ public class GameScene extends BaseScene implements ContactListener {
 
     private void setupTimer() {
         final Text timerText = new Text(0, 0, ResourcesManager.getInstance().fontHandler.getBasicFont(), "00:00.000", "000:000.0000".length(), ResourcesManager.getInstance().vertexBufferObjectManager);
+        timerText.setPosition(200 - timerText.getWidth()/2, 28);
         attachChild(timerText);
         registerUpdateHandler(new TimerHandler(1 / 20.0f, true, new ITimerCallback() {
             @Override
@@ -149,6 +178,25 @@ public class GameScene extends BaseScene implements ContactListener {
             }
         }));
     }
+
+    private void setupGhostTimer(){
+        registerUpdateHandler(new TimerHandler(5.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                showGhosts();
+            }
+        }));
+
+        registerUpdateHandler(new TimerHandler(4.0f, true, new ITimerCallback() {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+                hideGhosts();
+            }
+        }));
+    }
+
+
+
 
     @Override
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
@@ -317,6 +365,74 @@ public class GameScene extends BaseScene implements ContactListener {
             }
         }
     }
+
+    void setupGhosts(){
+        ghosts = new ArrayList<Ghost>();
+        for (Participant p : game.getParticipants()){
+            ghosts.add(new Ghost(0, 0, ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), p.getParticipantId()));
+        }
+        for (Ghost ghost : ghosts){
+            mazeLayer.getMazeBackground().attachChild(ghost);
+        }
+        hideGhosts();
+    }
+
+    void testSetupGhosts(){
+        ghosts = new ArrayList<Ghost>();
+        ArrayList<String> participantStrings = new ArrayList<String>();
+        participantStrings.add("ab");
+        participantStrings.add("bc");
+        participantStrings.add("ac");
+        for (String aids : participantStrings){
+            Log.w("MultiMazed", aids);
+            ghosts.add(new Ghost(45, 105, ResourcesManager.getInstance().spriteHandler.getUserSprite(), game.getVertexBufferObjectManager(), aids));
+        }
+        for (Ghost ghost : ghosts){
+            // ghost.setScale(2.0f);
+            mazeLayer.getMazeBackground().attachChild(ghost);
+        }
+        hideGhosts();
+    }
+
+    public void updateGhosts(int ghostX, int ghostY, String mParticipantID){
+        for (Ghost ghost : ghosts){
+            if (ghost.getParticipantID() == mParticipantID){
+                ghost.setPosition(ghostX*20, ghostY*30);
+            }
+        }
+
+    }
+
+    void testUpdateGhosts(int ghostX, int ghostY, String id){
+        Log.w("MultiMazed", "updateGhost");
+        for (Ghost ghost : ghosts){
+            if (ghost.getParticipantID() == id){
+                Log.w("MultiMazed", "ParticipantID: " + ghost.getParticipantID() + ". New posX: " + (ghost.getX()+ghostX));
+                ghost.setPosition(ghost.getX()+ ghostX, ghost.getY());
+            }
+        }
+    }
+
+    public void hideGhosts(){
+        Log.w("MultiMazed", "HIDE GHOST");
+        if (!ghostHidden){
+            for (Ghost ghost : ghosts){
+                ghost.setVisible(false);
+            }
+            ghostHidden = true;
+        }
+    }
+
+    public void showGhosts(){
+        if (ghostHidden){
+        Log.w("MultiMazed", "SHOW GHOST");
+            for (Ghost ghost : ghosts){
+                ghost.setVisible(true);
+            }
+            ghostHidden = false;
+        }
+    }
+
 
     @Override
     public void endContact(Contact contact) {
