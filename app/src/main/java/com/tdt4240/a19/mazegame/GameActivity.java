@@ -910,14 +910,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         String sender = rtm.getSenderParticipantId();
 
         // Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
-        if(buf.length==1){
+        if(buf.length<=1) {
             setSeed(seeds[(int) buf[0]]);
-            Log.d(TAG,"Message = " + buf[0] + " Seed Received");
-        }
-
-        if (buf.length > 3) {
+            Log.d(TAG, "Message = " + buf[0] + " Seed Received");
+        } else if (buf.length > 3) {
             Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1] + "/" + (int) buf[2] + "/" + (int) buf[3] + "/" + (int) buf[4]);
-        }
+        }else
         Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
 
         if (buf[0] == 'F' || buf[0] == 'U') {
