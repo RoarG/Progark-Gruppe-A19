@@ -46,7 +46,7 @@ public class MazeLayer extends Entity {
     /**
      * List of seeds that are set to be used
      */
-    private long[] seeds = {123L};
+    private long[] seeds ={123L};
 
     /**
      * Variables for center of screen, and size of the maze in (x*y)
@@ -70,6 +70,7 @@ public class MazeLayer extends Entity {
 
     public void init(int pCenterX, int pCenterY, int pMazeX, int pMazeY, PhysicsWorld world) {
         // BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        seeds[0] = ResourcesManager.getInstance().gameActivity.getSeed();
         this.mazeX = pMazeX;
         this.mazeY = pMazeY;
         this.centerX = pCenterX;

@@ -29,7 +29,7 @@ public class SettingsScene extends BaseScene implements org.andengine.entity.sce
     private final int MENU_MUSIC = 1;
     private final int MENU_BACK = 2;
 
-    private boolean isPlaying = true;
+    private int isPlaying = 0;
 
     private void createMenuChildScene()
     {
@@ -92,18 +92,16 @@ public class SettingsScene extends BaseScene implements org.andengine.entity.sce
             case MENU_MUSIC:
 
 
-                if (isPlaying){
+                if (isPlaying==0){
                     // TODO: FIKS av og på musikk
-                    ResourcesManager.getInstance().music.setLooping(false);
-                    ResourcesManager.getInstance().music.pause();
+                    ResourcesManager.getInstance().music.setVolume(0f,0f);
                     Log.d(TAG, "Isplaying og stop()" );
-                    isPlaying = false;
+                    isPlaying++;
                 }
-                else if (!isPlaying) {
-                    ResourcesManager.getInstance().music.setLooping(true);
-                    ResourcesManager.getInstance().music.play();
+                else if (isPlaying!=0) {
+                    ResourcesManager.getInstance().music.setVolume(1f,1f);
                     Log.d(TAG, "Else og Play()");
-                    isPlaying = true;
+                    isPlaying = 0;
                 }
 
                 return true;

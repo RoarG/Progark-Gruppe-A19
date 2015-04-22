@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class GameActivity extends GBaseGameActivity implements ConnectionCallbacks, OnConnectionFailedListener, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
@@ -108,6 +109,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // Are we playing in multiplayer mode?
     boolean mMultiplayer = false;
 
+    Invitation mInvitation;
     // The participants in the currently active game
     ArrayList<Participant> mParticipants = null;
 
@@ -125,6 +127,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     // Message buffer for sending messages
     byte[] mMsgBuf = new byte[5];
     byte[] mMsgBufPos = new byte[3];
+    byte[] mSeedBuf = new byte [1];
 
     private float xpos;
     private float ypos;
@@ -136,6 +139,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     public int mMytime = 0;
 
+
+    private final byte[] seeds = {123,24,3,4};
+    private long mSeed= 123;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -196,6 +202,12 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 //            mGoogleApiClient.connect();
 //        }
     }
+    public void setInvitation(Invitation invitation){
+        this.mInvitation = invitation;
+    }
+    public Invitation getInvitation(){
+        return this.mInvitation;
+    }
 
 
     @Override
@@ -218,6 +230,24 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     }
 
     @Override
+    protected void onPause() {
+            super.onPause();
+            ResourcesManager.getInstance().music.pause();
+            ResourcesManager.getInstance().music.setLooping(false);
+
+    }
+
+    @Override
+    protected synchronized void onResume() {
+        super.onResume();
+        System.gc();
+        if(this.isGameLoaded()) {
+            ResourcesManager.getInstance().music.play();
+            ResourcesManager.getInstance().music.setLooping(true);
+        }
+    }
+
+    @Override
     public void onConnected(Bundle connectionHint) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
 
@@ -233,7 +263,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             if (inv != null && inv.getInvitationId() != null) {
                 // retrieve and cache the invitation ID
                 Log.d(TAG, "onConnected: connection hint has a room invite!");
-                acceptInviteToRoom(inv.getInvitationId());
+                acceptInviteToRoom(inv);
                 return;
             }
         }
@@ -381,12 +411,26 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+        } else if(autoMatchCriteria==null) {
+            setSeed(randomSeed());
         }
         // TODO: Sett loadingscreen
         //switchToScreen(R.id.screen_wait);
         resetGameVars();
         Games.RealTimeMultiplayer.create(mGoogleApiClient, rtmConfigBuilder.build());
         Log.d(TAG, "Room created, waiting for it to be ready...");
+    }
+    private int randomSeed(){
+        int max =4,min=0;
+        Random random = new Random();
+        int randomSeed = random.nextInt((max-min)+1)+min;
+        return randomSeed;
+    }
+    public Long getSeed(){
+        return this.mSeed;
+    }
+    private void setSeed(long seed){
+        this.mSeed = seed;
     }
 
     // Handle the result of the invitation inbox UI, where the player can pick an invitation
@@ -403,21 +447,24 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         Invitation inv = data.getExtras().getParcelable(Multiplayer.EXTRA_INVITATION);
 
         // accept invitation
-        acceptInviteToRoom(inv.getInvitationId());
+        acceptInviteToRoom(inv);
     }
 
     // Accept the given invitation.
-    public void acceptInviteToRoom(String invId) {
+    public void acceptInviteToRoom(Invitation inv) {
         // accept the invitation
-        Log.d(TAG, "Accepting invitation: " + invId);
+        Log.d(TAG, "Accepting invitation: " + inv.getInvitationId());
         RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(this);
-        roomConfigBuilder.setInvitationIdToAccept(invId)
+        roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId())
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
         // TODO: Loading screen
         //switchToScreen(R.id.screen_wait);
         resetGameVars();
         Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
+
+        setInviterName(inv);
+        SceneManager.getInstance().createGameRoomScene(mEngine);
     }
 
 
@@ -463,6 +510,7 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 invitation.getInviter().getDisplayName() + " " +
                         getString(R.string.is_inviting_you));*/
 //        switchToScreen(mCurScreen); // This will show the invitation popup
+        setInvitation(invitation);
         setInviterName(invitation);
         SceneManager.getInstance().createGameRoomScene(mEngine);
 
@@ -588,7 +636,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
             for (Participant p : mParticipants) {
                 String pid = p.getParticipantId();
                 if (pid.equals(mMyId)) {
-                    Log.d(TAG, "KOMEMMER ANGAENAFAFaf");
                     scoreMatrix[i][0] = mMytime + "";
                     scoreMatrix[i][1] = p.getDisplayName();
                 } else {
@@ -599,7 +646,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                     }
                     if (p.getStatus() != Participant.STATUS_JOINED)
                         continue;
-
                     ++i;
                 }
             }/*
@@ -857,7 +903,10 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         String sender = rtm.getSenderParticipantId();
 
         // Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1]);
-
+        if(buf.length==1){
+            setSeed(seeds[(int) buf[0]]);
+            Log.d(TAG,"Message = " + buf[0] + " Seed Received");
+        }
 
         if (buf.length > 3) {
             Log.d(TAG, "Message received: " + (char) buf[0] + "/" + (int) buf[1] + "/" + (int) buf[2] + "/" + (int) buf[3] + "/" + (int) buf[4]);
@@ -909,6 +958,23 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         isFinished = true;
     }
 
+    void broadcastSeed(int seed){
+        if(!mMultiplayer)
+            return;
+        Log.d(TAG, "Seed = " + seed);
+        mSeedBuf[0] = (byte) seed;
+        for (Participant p : mParticipants) {
+            if (p.getParticipantId().equals(mMyId))
+                continue;
+            if (p.getStatus() != Participant.STATUS_JOINED)
+                continue;
+            else {
+                // it's an interim score notification, so we can use unreliable
+                Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mSeedBuf, mRoomId,
+                        p.getParticipantId());
+            }
+        }
+    }
     // Broadcast my score to everybody else.
     void broadcastScore(boolean finalScore) {
         if (!mMultiplayer)

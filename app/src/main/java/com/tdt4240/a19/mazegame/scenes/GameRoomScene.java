@@ -76,7 +76,7 @@ public class GameRoomScene extends BaseScene implements org.andengine.entity.sce
     public boolean onMenuItemClicked(org.andengine.entity.scene.menu.MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
         switch (pMenuItem.getID()) {
             case MENU_START:
-                ResourcesManager.getInstance().gameActivity.acceptInviteToRoom(ResourcesManager.getInstance().gameActivity.getInvId());
+                ResourcesManager.getInstance().gameActivity.acceptInviteToRoom(ResourcesManager.getInstance().gameActivity.getInvitation());
                 return true;
             case MENU_LEAVE:
                 SceneManager.getInstance().loadMenuScene();
