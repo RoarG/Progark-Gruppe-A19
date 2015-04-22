@@ -273,7 +273,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     }
 
-
+    public String getMyId(){
+        return this.mMyId;
+    }
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
