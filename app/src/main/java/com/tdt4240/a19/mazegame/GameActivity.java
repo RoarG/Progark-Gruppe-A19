@@ -414,7 +414,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         } else if(autoMatchCriteria==null) {
-            setSeed(randomSeed());
+            int randomSeed=randomSeed();
+            setSeed(randomSeed);
+            broadcastSeed(randomSeed);
         }
         // TODO: Sett loadingscreen
         //switchToScreen(R.id.screen_wait);
@@ -431,8 +433,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
     public Long getSeed(){
         return this.mSeed;
     }
-    private void setSeed(long seed){
-        this.mSeed = seed;
+    private void setSeed(int seed){
+        this.mSeed = seeds[seed];
     }
 
     // Handle the result of the invitation inbox UI, where the player can pick an invitation
