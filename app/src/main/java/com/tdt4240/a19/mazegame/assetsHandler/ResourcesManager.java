@@ -1,8 +1,12 @@
 package com.tdt4240.a19.mazegame.assetsHandler;
 
+import android.util.Log;
+
 import com.google.android.gms.games.Game;
 import com.tdt4240.a19.mazegame.GameActivity;
 
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.opengl.texture.TextureOptions;
@@ -12,10 +16,14 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObject;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import java.io.IOException;
+
 /**
  * Created by mathi_000 on 25.03.2015.
  */
 public class ResourcesManager {
+
+    private static final String TAG = "MultiMazed";
 
     private static final ResourcesManager INSTANCE = new ResourcesManager();
 
@@ -29,9 +37,11 @@ public class ResourcesManager {
     public ITextureRegion splash_region;
     private BitmapTextureAtlas splashTextureAtlas;
 
+    public Music music;
+
     public void loadMenuResources() {
         loadMenuGraphics();
-        loadMenuAudio();
+        loadGameAudio();
         loadGameFonts();
     }
 
@@ -68,7 +78,14 @@ public class ResourcesManager {
     }
 
     private void loadGameAudio() {
-
+        try
+        {
+            music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), this.gameActivity, "music/test.ogg");
+            Log.d(TAG, " Music" + music);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void loadSplashScreen() {

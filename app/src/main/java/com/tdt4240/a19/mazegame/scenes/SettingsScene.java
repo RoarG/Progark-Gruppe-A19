@@ -1,5 +1,7 @@
 package com.tdt4240.a19.mazegame.scenes;
 
+import android.util.Log;
+
 import com.tdt4240.a19.mazegame.GameActivity;
 import com.tdt4240.a19.mazegame.assetsHandler.ResourcesManager;
 
@@ -19,11 +21,15 @@ import org.andengine.entity.sprite.ButtonSprite;
  */
 public class SettingsScene extends BaseScene implements org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener{
 
+    private static final String TAG = "MultiMazed";
+
     //private ButtonSprite sounds;
     private MenuScene menuChildScene;
     private final int MENU_SOUNDS = 0;
     private final int MENU_MUSIC = 1;
     private final int MENU_BACK = 2;
+
+    private boolean isPlaying = true;
 
     private void createMenuChildScene()
     {
@@ -84,7 +90,22 @@ public class SettingsScene extends BaseScene implements org.andengine.entity.sce
                 //SceneManager.getInstance().loadGameScene(engine);
                 return true;
             case MENU_MUSIC:
-                //SceneManager.getInstance().createSettingsScene();
+
+
+                if (isPlaying){
+                    // TODO: FIKS av og på musikk
+                    ResourcesManager.getInstance().music.setLooping(false);
+                    ResourcesManager.getInstance().music.pause();
+                    Log.d(TAG, "Isplaying og stop()" );
+                    isPlaying = false;
+                }
+                else if (!isPlaying) {
+                    ResourcesManager.getInstance().music.setLooping(true);
+                    ResourcesManager.getInstance().music.play();
+                    Log.d(TAG, "Else og Play()");
+                    isPlaying = true;
+                }
+
                 return true;
             case MENU_BACK:
                 SceneManager.getInstance().loadMenuScene();

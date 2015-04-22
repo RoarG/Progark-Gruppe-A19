@@ -38,6 +38,7 @@ import com.tdt4240.a19.mazegame.scenes.GameScene;
 import com.tdt4240.a19.mazegame.scenes.SceneManager;
 import com.tdt4240.a19.mazegame.scenes.GameRoomScene;
 
+
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -50,6 +51,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.ui.IGameInterface;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -129,7 +131,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
 
     public int mMytime = 0;
 
-
     @Override
     public EngineOptions onCreateEngineOptions() {
         BoundCamera camera = new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -137,7 +138,9 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         //camera.setBoundsEnabled(true);
         this.camera = camera;
         Log.w(TAG, "onCreateEngineOptions");
-        return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+        EngineOptions options = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+        options.getAudioOptions().setNeedsMusic(true);
+        return options;
     }
 
     @Override
@@ -159,6 +162,8 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         resourcesManager = ResourcesManager.getInstance();
         pOnCreateResourcesCallback.onCreateResourcesFinished();
 
+
+
     }
 
     @Override
@@ -174,7 +179,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
         Log.w(TAG, "onCreateScene mGoogleApiClient = " + mGoogleApiClient.getClass());
-
 
     }
 
@@ -894,7 +898,6 @@ public class GameActivity extends GBaseGameActivity implements ConnectionCallbac
         long min = sec /60;
         ms=ms%1000;
         sec = sec%60;
-        min = min &60;
         int tempScoreX = (int)min;
         int tempScoreXX = (int)sec/10;
         int tempScoreXXX = (int)sec%10;
